@@ -7,7 +7,7 @@ export const COLLECTION_NAME = 'users';
 export default interface User extends Document {
     firstname: string;
     lastname: string;
-    emailUsername: string;
+    email: string;
     password: string;
     roles: Role[];
 }
@@ -15,7 +15,7 @@ export default interface User extends Document {
 const UserSchema = new Schema({
     firstname: String,
     lastname: String,
-    emailUsername: String,
+    email: String,
     password: String,
     roles: {
         type: [

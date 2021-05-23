@@ -16,9 +16,9 @@ const router = express.Router();
   */
 router.get(
     '/:user',
-    validator(schema.emailUsername, ValidationSource.PARAM),
+    validator(schema.email, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
-        const user = await UserRepo.findByEmailusername(req.params.user);
+        const user = await UserRepo.findByEmail(req.params.user);
         if (!user) throw new NoDataError();
 
         return new SuccessResponse('success', user).send(res);

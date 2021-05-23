@@ -9,6 +9,12 @@ export default class EventRepo {
         .exec();
     }
 
+    public static async findHasBeenNotified(): Promise<Event[]> {
+        return EventModel.find({ notified: false, isLive: false })
+        .lean<Event>()
+        .exec();
+    }
+
     public static async findAll(): Promise<Event[]> {
         return EventModel.find({})
         .lean<Event>()
@@ -16,6 +22,8 @@ export default class EventRepo {
     }
 
     public static async create(event: Event): Promise<Event> {
+        event.notified = false;
+        event.isLive = false;
         const createdEvent = await EventModel.create(event);
         return createdEvent.toObject();
     }

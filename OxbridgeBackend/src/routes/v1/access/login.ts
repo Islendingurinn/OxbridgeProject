@@ -23,7 +23,7 @@ export default router.post(
     '/',
     validator(schema.userCredential),
     asyncHandler(async (req, res) => {
-        const user = await UserRepo.findByEmailusername(req.body.emailUsername);
+        const user = await UserRepo.findByEmail(req.body.email);
         if(!user) throw new BadRequestError('User not registered');
         if(!user.password) throw new BadRequestError('Credential not set');
 
@@ -37,7 +37,7 @@ export default router.post(
         const tokens = await createTokens(user, accessTokenKey, refreshTokenKey);
 
         new SuccessResponse('Login success', {
-            user: _.pick(user, ['_id', 'firstname', 'lastname', 'emailusername', 'roles']),
+            user: _.pick(user, ['_id', 'firstname', 'lastname', 'email', 'roles']),
             tokens: tokens,
         }).send(res);
     })

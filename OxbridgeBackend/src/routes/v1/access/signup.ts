@@ -25,7 +25,7 @@ router.post(
     '/',
     validator(schema.signup),
     asyncHandler(async (req: RoleRequest, res) => {
-        const user = await UserRepo.findByEmailusername(req.body.emailUsername);
+        const user = await UserRepo.findByEmail(req.body.email);
         if (user) throw new BadRequestError('User already registered');
 
         const accessTokenKey = crypto.randomBytes(64).toString('hex');
@@ -34,7 +34,7 @@ router.post(
 
         const { user: createdUser, keystore } = await UserRepo.create(
             {
-                emailUsername: req.body.emailUsername,
+                email: req.body.email,
                 password: passwordHash,
             } as User,
             accessTokenKey,
@@ -44,7 +44,7 @@ router.post(
 
         const tokens = await createTokens(createdUser, keystore.primaryKey, keystore.secondaryKey);
         new SuccessResponse('Signup successful', {
-            user: _.pick(createdUser, ['_id', 'emailUsername', 'roles']),
+            user: _.pick(createdUser, ['_id', 'email', 'roles']),
             tokens: tokens,
         }).send(res);
     }),

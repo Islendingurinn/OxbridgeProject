@@ -11,6 +11,7 @@ export default interface Event extends Document {
     eventCode: string;
     actualEventStart: Date;
     isLive: boolean;
+    notified: boolean;
 }
 
 const EventSchema = new Schema({
@@ -20,7 +21,8 @@ const EventSchema = new Schema({
     city: String,
     eventCode: String,
     actualEventStart : Date,
-    isLive : Boolean
+    isLive : Boolean,
+    notified : Boolean,
 });
 
 export const EventModel = model<Event>(DOCUMENT_NAME, EventSchema, COLLECTION_NAME);
