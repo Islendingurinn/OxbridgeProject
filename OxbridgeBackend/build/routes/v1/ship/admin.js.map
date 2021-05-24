@@ -1,1 +1,0 @@
-{"version":3,"file":"admin.js","sourceRoot":"","sources":["../../../../src/routes/v1/ship/admin.ts"],"names":[],"mappings":";;;;;AAAA,sDAA8B;AAC9B,kFAA0D;AAC1D,gFAAwD;AACxD,iEAAyC;AAGzC,MAAM,MAAM,GAAG,iBAAO,CAAC,MAAM,EAAE,CAAC;AAEhC,8EAA8E;AAC9E,MAAM,CAAC,GAAG,CAAC,GAAG,EAAE,wBAAc,EAAE,cAAI,qBAAgB,EAAE,uBAAa,CAAC,CAAC;AACrE,8EAA8E;AAE9E,kBAAe,MAAM,CAAC"}
