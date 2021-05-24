@@ -35,6 +35,7 @@ const JWT_1 = __importDefault(require("../../../core/JWT"));
 const ApiError_2 = require("../../../core/ApiError");
 const ShipRepo_1 = __importDefault(require("../../../database/repository/ShipRepo"));
 const UserRepo_1 = __importDefault(require("../../../database/repository/UserRepo"));
+const EmailConfirmation_1 = __importDefault(require("../../../mail/EmailConfirmation"));
 const router = express_1.default.Router();
 /**
   * Gets all event registrations
@@ -107,6 +108,7 @@ router.post('/', validator_1.default(schema_1.default.newEventRegistration), asy
         trackColor: req.body.trackColor,
         teamName: req.body.teamName,
     });
+    new EmailConfirmation_1.default(req.body.shipId, req.body.eventId);
     new ApiResponse_1.SuccessResponse('Event registration created successfully', createdEventRegistration).send(res);
 }));
 exports.default = router;

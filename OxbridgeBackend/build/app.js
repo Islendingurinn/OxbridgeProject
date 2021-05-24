@@ -9,6 +9,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const config_1 = require("./config");
 require("./database"); // initialize database
+require("./mail"); //initialize the mail functionality
 const ApiError_1 = require("./core/ApiError");
 const v1_1 = __importDefault(require("./routes/v1"));
 process.on('uncaughtException', (e) => {

@@ -32,8 +32,8 @@ class UserRepo {
             .lean()
             .exec();
     }
-    static async findByEmailusername(emailUsername) {
-        return User_1.UserModel.findOne({ emailUsername: emailUsername })
+    static async findByEmail(email) {
+        return User_1.UserModel.findOne({ email: email })
             .select("-password")
             .populate({
             path: 'roles',

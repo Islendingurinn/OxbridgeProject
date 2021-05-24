@@ -22,7 +22,7 @@ const router = express_1.default.Router();
   * Return: User, Tokens
   */
 exports.default = router.post('/', validator_1.default(schema_1.default.userCredential), asyncHandler_1.default(async (req, res) => {
-    const user = await UserRepo_1.default.findByEmailusername(req.body.emailUsername);
+    const user = await UserRepo_1.default.findByEmail(req.body.email);
     if (!user)
         throw new ApiError_1.BadRequestError('User not registered');
     if (!user.password)
@@ -35,7 +35,7 @@ exports.default = router.post('/', validator_1.default(schema_1.default.userCred
     await KeystoreRepo_1.default.create(user._id, accessTokenKey, refreshTokenKey);
     const tokens = await authUtils_1.createTokens(user, accessTokenKey, refreshTokenKey);
     new ApiResponse_1.SuccessResponse('Login success', {
-        user: lodash_1.default.pick(user, ['_id', 'firstname', 'lastname', 'emailusername', 'roles']),
+        user: lodash_1.default.pick(user, ['_id', 'firstname', 'lastname', 'email', 'roles']),
         tokens: tokens,
     }).send(res);
 }));

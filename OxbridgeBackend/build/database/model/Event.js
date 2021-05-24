@@ -11,7 +11,8 @@ const EventSchema = new mongoose_1.Schema({
     city: String,
     eventCode: String,
     actualEventStart: Date,
-    isLive: Boolean
+    isLive: Boolean,
+    notified: Boolean,
 });
 exports.EventModel = mongoose_1.model(exports.DOCUMENT_NAME, EventSchema, exports.COLLECTION_NAME);
 //# sourceMappingURL=Event.js.map

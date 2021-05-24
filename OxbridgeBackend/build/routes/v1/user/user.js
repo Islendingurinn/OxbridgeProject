@@ -35,8 +35,8 @@ const router = express_1.default.Router();
   * Route: GET /users/:user
   * Return: User
   */
-router.get('/:user', validator_1.default(schema_1.default.emailUsername, validator_1.ValidationSource.PARAM), asyncHandler_1.default(async (req, res) => {
-    const user = await UserRepo_1.default.findByEmailusername(req.params.user);
+router.get('/:user', validator_1.default(schema_1.default.email, validator_1.ValidationSource.PARAM), asyncHandler_1.default(async (req, res) => {
+    const user = await UserRepo_1.default.findByEmail(req.params.user);
     if (!user)
         throw new ApiError_1.NoDataError();
     return new ApiResponse_1.SuccessResponse('success', user).send(res);

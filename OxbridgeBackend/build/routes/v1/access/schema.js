@@ -7,7 +7,7 @@ const joi_1 = __importDefault(require("@hapi/joi"));
 const validator_1 = require("../../../helpers/validator");
 exports.default = {
     userCredential: joi_1.default.object().keys({
-        emailUsername: joi_1.default.string().required(),
+        email: joi_1.default.string().email().required(),
         password: joi_1.default.string().required().min(6),
     }),
     refreshToken: joi_1.default.object().keys({
@@ -17,7 +17,7 @@ exports.default = {
         authorization: validator_1.JoiAuthBearer().required(),
     }).unknown(true),
     signup: joi_1.default.object().keys({
-        emailUsername: joi_1.default.string().required().min(3),
+        email: joi_1.default.string().email().required(),
         password: joi_1.default.string().required().min(6),
     }),
 };

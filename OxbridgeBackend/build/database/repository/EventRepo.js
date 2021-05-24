@@ -7,12 +7,19 @@ class EventRepo {
             .lean()
             .exec();
     }
+    static async findHasBeenNotified() {
+        return Event_1.EventModel.find({ notified: false, isLive: false })
+            .lean()
+            .exec();
+    }
     static async findAll() {
         return Event_1.EventModel.find({})
             .lean()
             .exec();
     }
     static async create(event) {
+        event.notified = false;
+        event.isLive = false;
         const createdEvent = await Event_1.EventModel.create(event);
         return createdEvent.toObject();
     }

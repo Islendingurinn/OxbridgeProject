@@ -4,7 +4,7 @@ import Event from '../database/model/Event';
 import EventRegistrationRepo from '../database/repository/EventRegistrationRepo';
 import UserRepo from '../database/repository/UserRepo';
 import ShipRepo from '../database/repository/ShipRepo';
-import { transporter } from './index';
+import { transporter } from './';
 
 /**
   * The class handles the Cron job that runs every day,

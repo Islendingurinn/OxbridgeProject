@@ -21,19 +21,19 @@ const router = express_1.default.Router();
   * Return: User, Tokens
   */
 router.post('/', validator_1.default(schema_1.default.signup), asyncHandler_1.default(async (req, res) => {
-    const user = await UserRepo_1.default.findByEmailusername(req.body.emailUsername);
+    const user = await UserRepo_1.default.findByEmail(req.body.email);
     if (user)
         throw new ApiError_1.BadRequestError('User already registered');
     const accessTokenKey = crypto_1.default.randomBytes(64).toString('hex');
     const refreshTokenKey = crypto_1.default.randomBytes(64).toString('hex');
     const passwordHash = await bcrypt_1.default.hash(req.body.password, 10);
     const { user: createdUser, keystore } = await UserRepo_1.default.create({
-        emailUsername: req.body.emailUsername,
+        email: req.body.email,
         password: passwordHash,
     }, accessTokenKey, refreshTokenKey, "USER" /* USER */);
     const tokens = await authUtils_1.createTokens(createdUser, keystore.primaryKey, keystore.secondaryKey);
     new ApiResponse_1.SuccessResponse('Signup successful', {
-        user: lodash_1.default.pick(createdUser, ['_id', 'emailUsername', 'roles']),
+        user: lodash_1.default.pick(createdUser, ['_id', 'email', 'roles']),
         tokens: tokens,
     }).send(res);
 }));

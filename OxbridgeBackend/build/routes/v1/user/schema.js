@@ -9,20 +9,20 @@ exports.default = {
     newUser: joi_1.default.object().keys({
         firstname: joi_1.default.string().required().min(3),
         lastname: joi_1.default.string().required().min(3),
-        emailUsername: joi_1.default.string().required().min(3),
+        email: joi_1.default.string().email().required(),
         password: joi_1.default.string().required().min(6),
     }),
     updateUser: joi_1.default.object().keys({
         firstname: joi_1.default.string().required().min(3),
         lastname: joi_1.default.string().required().min(3),
-        emailUsername: joi_1.default.string().required().min(3),
+        email: joi_1.default.string().email().required(),
         password: joi_1.default.string().required().min(6),
     }),
     userId: joi_1.default.object().keys({
         id: validator_1.JoiObjectId().required(),
     }),
-    emailUsername: joi_1.default.object().keys({
-        emailUsername: joi_1.default.string().required().min(3),
+    email: joi_1.default.object().keys({
+        email: joi_1.default.string().email().required(),
     }),
 };
 //# sourceMappingURL=schema.js.map

@@ -7,7 +7,7 @@ exports.COLLECTION_NAME = 'users';
 const UserSchema = new mongoose_1.Schema({
     firstname: String,
     lastname: String,
-    emailUsername: String,
+    email: String,
     password: String,
     roles: {
         type: [

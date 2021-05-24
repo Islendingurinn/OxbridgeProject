@@ -50,7 +50,7 @@ router.get('/', asyncHandler_1.default(async (req, res) => {
   * Route: GET /ships/:id
   * Return: Ship
   */
-router.get('/:id', validator_1.default(schema_1.default.shipId), asyncHandler_1.default(async (req, res) => {
+router.get('/:id', validator_1.default(schema_1.default.shipId, validator_1.ValidationSource.PARAM), asyncHandler_1.default(async (req, res) => {
     const ship = await ShipRepo_1.default.findById(req.body.id);
     if (!ship)
         throw new ApiError_1.NoDataError('No ship with this id');
@@ -82,7 +82,7 @@ router.get('/mine', asyncHandler_1.default(async (req, res) => {
   * Return: Ship[] (anonymous object with Ship fields
   * and teamName from EventRegistration)
   */
-router.get('/fromEvent/:id', validator_1.default(schema_1.default.eventId), asyncHandler_1.default(async (req, res) => {
+router.get('/fromEvent/:id', validator_1.default(schema_1.default.eventId, validator_1.ValidationSource.PARAM), asyncHandler_1.default(async (req, res) => {
     const registrations = await EventRegistrationRepo_1.default.findByEvent(req.body.id);
     if (!registrations)
         throw new ApiError_1.NoDataError('No event registrations');
