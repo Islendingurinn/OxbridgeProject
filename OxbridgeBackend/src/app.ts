@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import { corsUrl, environment } from './config';
 import './database'; // initialize database
+import './mail'; //initialize the mail functionality
 import { NotFoundError, ApiError, InternalError } from './core/ApiError';
 import routesV1 from './routes/v1';
 

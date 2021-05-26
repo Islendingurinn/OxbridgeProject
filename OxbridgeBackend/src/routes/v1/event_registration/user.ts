@@ -13,6 +13,7 @@ import JWT from '../../../core/JWT';
 import { AuthFailureError } from '../../../core/ApiError';
 import ShipRepo from '../../../database/repository/ShipRepo';
 import UserRepo from '../../../database/repository/UserRepo';
+import EmailConfirmation from '../../../mail/EmailConfirmation';
 
 const router = express.Router();
 
@@ -108,6 +109,7 @@ router.post(
             teamName: req.body.teamName,
         } as EventRegistration);
 
+        new EmailConfirmation(req.body.shipId, req.body.eventId);
         new SuccessResponse('Event registration created successfully', createdEventRegistration).send(res);
     })
 )
