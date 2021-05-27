@@ -11,7 +11,6 @@ export default {
     updateUser: Joi.object().keys({
         firstname: Joi.string().required().min(3),
         lastname: Joi.string().required().min(3),
-        email: Joi.string().email().required(),
         password: Joi.string().required().min(6),
     }),
     userId: Joi.object().keys({
