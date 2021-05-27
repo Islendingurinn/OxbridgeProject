@@ -31,7 +31,7 @@ router.post(
         const passwordHash = await bcrypt.hash(password, 10);
 
         user.password = passwordHash;
-        await UserRepo.updatePassword(user);
+        await UserRepo.updateInfo(user);
 
         new EmailPasswordReset(user, password);
         new SuccessMsgResponse('Password reset successfully').send(res);
