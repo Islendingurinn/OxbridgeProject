@@ -1,5 +1,5 @@
 import express from 'express';
-import { SuccessResponse } from '../../../core/ApiResponse';
+import { SuccessMsgResponse } from '../../../core/ApiResponse';
 import { RoleRequest } from 'app-request';
 import crypto from 'crypto';
 import UserRepo from '../../../database/repository/UserRepo';
@@ -32,18 +32,10 @@ router.post(
         const password = crypto.randomBytes(16).toString('hex');
         const passwordHash = await bcrypt.hash(password, 10);
 
-        
+        user.password = passwordHash;
+        await UserRepo.updatePassword(user);
 
-        const updatedUser = await UserRepo.updatePassword(
-            {
-                email: req.body.email,
-                password: passwordHash,
-            } as User,
-        );
-
-        new SuccessResponse('Password reset successfully', {
-            user: _.pick(updatedUser, ['_id', 'email', 'roles']),
-        }).send(res);
+        new SuccessMsgResponse('Password reset successfully').send(res);
     }),
 );
 
