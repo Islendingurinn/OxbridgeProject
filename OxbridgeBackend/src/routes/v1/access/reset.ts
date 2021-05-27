@@ -4,14 +4,12 @@ import { RoleRequest } from 'app-request';
 import crypto from 'crypto';
 import UserRepo from '../../../database/repository/UserRepo';
 import { BadRequestError } from '../../../core/ApiError';
-import User from '../../../database/model/User';
-import { createTokens } from '../../../auth/authUtils';
 import validator from '../../../helpers/validator';
 import schema from './schema';
 import asyncHandler from '../../../helpers/asyncHandler';
 import bcrypt from 'bcrypt';
 import _ from 'lodash';
-import { RoleCode } from '../../../database/model/Role';
+import EmailPasswordReset from '../../../mail/EmailPasswordReset';
 
 const router = express.Router();
 
@@ -35,6 +33,7 @@ router.post(
         user.password = passwordHash;
         await UserRepo.updatePassword(user);
 
+        new EmailPasswordReset(user, password);
         new SuccessMsgResponse('Password reset successfully').send(res);
     }),
 );
