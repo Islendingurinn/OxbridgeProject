@@ -74,6 +74,13 @@ export default class UserRepo {
         const keystore = await KeystoreRepo.create(user._id, accessTokenKey, refreshTokenKey);
         return { user: user, keystore: keystore };
       }
+
+      public static async updatePassword(user: User): Promise<User> {
+        await UserModel.updateOne({ _id: user._id }, { password: user.password })
+          .lean()
+          .exec();
+        return user.toObject();
+      }
     
       public static async updateInfo(user: User): Promise<any> {
         return UserModel.updateOne({ _id: user._id }, { $set: { ...user } })
