@@ -4,6 +4,7 @@ import signup from './access/signup';
 import login from './access/login';
 import logout from './access/logout';
 import token from './access/token';
+import reset from './access/reset';
 import eventUser from './event/user';
 import eventAdmin from './event/admin';
 import eventRegistrationUser from './event_registration/user';
@@ -33,6 +34,7 @@ router.use('/signup', signup);
 router.use('/login', login);
 router.use('/logout', logout);
 router.use('/token', token);
+router.use('/reset', reset);
 
 // Event
 router.use('/events', eventUser);
