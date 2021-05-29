@@ -16,9 +16,16 @@ import ShipRepo from '../../../database/repository/ShipRepo';
 import EventRegistrationRepo from '../../../database/repository/EventRegistrationRepo';
 import EventRegistration from '../../../database/model/EventRegistration';
 import Event from '../../../database/model/Event';
-import Logger from '../../../core/Logger';
+import authentication from '../../../auth/authentication';
+import authorization from '../../../auth/authorization';
+import role from '../../../helpers/role';
+import { RoleCode } from '../../../database/model/Role';
 
 const router = express.Router();
+
+// Below all APIs are private APIs protected for Access Token and Users Role
+router.use('/', authentication, role(RoleCode.USER), authorization);
+// ---------------------------------------------------------------------------
 
 /**
   * Gets all events
