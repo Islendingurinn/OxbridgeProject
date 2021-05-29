@@ -21,7 +21,7 @@ import { RoleCode } from '../../../database/model/Role';
 const router = express.Router();
 
 // Below all APIs are private APIs protected for Access Token and Users Role
-router.use('/', authentication, role(RoleCode.USER), authorization);
+router.use('/', authentication, role(RoleCode.USER), role(RoleCode.ADMIN), authorization);
 // ---------------------------------------------------------------------------
 
 /**
@@ -38,27 +38,11 @@ router.get(
 )
 
 /**
-  * Gets a registered ship
-  * Route: GET /ships/:id
-  * Return: Ship
-  */
-router.get(
-    '/:id',
-    validator(schema.shipId, ValidationSource.PARAM),
-    asyncHandler(async (req: ProtectedRequest, res) => {
-        const ship = await ShipRepo.findById(req.body.id);
-        if(!ship) throw new NoDataError('No ship with this id');
-
-        return new SuccessResponse('success', ship).send(res);
-    })
-)
-
-/**
   * Gets all ships of the user
   * Route: GET /ships/mine
   * Return: Ship[]
   */
-router.get(
+ router.get(
     '/mine',
     asyncHandler(async (req: ProtectedRequest, res) => {
         //Retrieve the payload from the authorization header
@@ -84,7 +68,7 @@ router.get(
   * Return: Ship[] (anonymous object with Ship fields 
   * and teamName from EventRegistration)
   */
-router.get(
+ router.get(
     '/fromEvent/:id',
     validator(schema.eventId, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
@@ -104,6 +88,22 @@ router.get(
         }
 
         return new SuccessResponse('success', ships).send(res);
+    })
+)
+
+/**
+  * Gets a registered ship
+  * Route: GET /ships/:id
+  * Return: Ship
+  */
+router.get(
+    '/:id',
+    validator(schema.shipId, ValidationSource.PARAM),
+    asyncHandler(async (req: ProtectedRequest, res) => {
+        const ship = await ShipRepo.findById(req.body.id);
+        if(!ship) throw new NoDataError('No ship with this id');
+
+        return new SuccessResponse('success', ship).send(res);
     })
 )
 
