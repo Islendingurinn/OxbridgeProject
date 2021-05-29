@@ -24,72 +24,15 @@ import { RoleCode } from '../../../database/model/Role';
 const router = express.Router();
 
 // Below all APIs are private APIs protected for Access Token and Users Role
-router.use('/', authentication, role(RoleCode.USER), authorization);
+router.use('/', authentication, role(RoleCode.USER), role(RoleCode.ADMIN), authorization);
 // ---------------------------------------------------------------------------
-
-/**
-  * Gets all events
-  * Route: GET /events/
-  * Return: Event[]
-  */
- router.get(
-    '/',
-    asyncHandler(async (req: ProtectedRequest, res) => {
-        const events = await EventRepo.findAll();
-        return new SuccessResponse('success', events).send(res);
-    })
-)
-
-/**
-  * Get an event by id
-  * Route: GET /events/:id
-  * Return: Event
-  */
-router.get(
-    '/:id',
-    validator(schema.eventId, ValidationSource.PARAM),
-    asyncHandler(async (req: ProtectedRequest, res) => {
-        const event = await EventRepo.findById(
-            new Types.ObjectId(req.params.id),
-        );
-
-        if (!event) throw new NoDataError();
-
-        return new SuccessResponse('success', event).send(res);
-    }),
-);
-
-/**
-  * Sees if an event has a racepoint route
-  * Route: GET /events/:id/hasRoute/
-  * Return: Boolean
-  */
-router.get(
-    '/:id/hasRoute',
-    validator(schema.eventId, ValidationSource.PARAM),
-    asyncHandler(async (req: ProtectedRequest, res) => {
-        const event = await EventRepo.findById(
-            new Types.ObjectId(req.params.id)
-        );
-        if(!event) throw new NoDataError();
-
-        const racepoints = await RacePointRepo.findByEvent(
-            new Types.ObjectId(req.params.id)
-        );
-        
-        let result = false;
-        if(racepoints.length !== 0) result = true;
-
-        return new SuccessResponse('success', result).send(res);
-    })
-)
 
 /**
   * Gets all events a user participates in
   * Route: GET /events/mine
   * Return: Event[]
   */
-router.get(
+ router.get(
     '/mine',
     asyncHandler(async (req: ProtectedRequest, res) => {
         //Retrieve the payload from the current authentication tokens
@@ -121,6 +64,63 @@ router.get(
         }
         if(!events) throw new NoDataError('User is not associated with any events');
 
+        return new SuccessResponse('success', events).send(res);
+    })
+)
+
+/**
+  * Get an event by id
+  * Route: GET /events/:id
+  * Return: Event
+  */
+ router.get(
+    '/:id',
+    validator(schema.eventId, ValidationSource.PARAM),
+    asyncHandler(async (req: ProtectedRequest, res) => {
+        const event = await EventRepo.findById(
+            new Types.ObjectId(req.params.id),
+        );
+
+        if (!event) throw new NoDataError();
+
+        return new SuccessResponse('success', event).send(res);
+    }),
+);
+
+/**
+  * Sees if an event has a racepoint route
+  * Route: GET /events/:id/hasRoute/
+  * Return: Boolean
+  */
+ router.get(
+    '/:id/hasRoute',
+    validator(schema.eventId, ValidationSource.PARAM),
+    asyncHandler(async (req: ProtectedRequest, res) => {
+        const event = await EventRepo.findById(
+            new Types.ObjectId(req.params.id)
+        );
+        if(!event) throw new NoDataError();
+
+        const racepoints = await RacePointRepo.findByEvent(
+            new Types.ObjectId(req.params.id)
+        );
+        
+        let result = false;
+        if(racepoints.length !== 0) result = true;
+
+        return new SuccessResponse('success', result).send(res);
+    })
+)
+
+/**
+  * Gets all events
+  * Route: GET /events/
+  * Return: Event[]
+  */
+ router.get(
+    '/',
+    asyncHandler(async (req: ProtectedRequest, res) => {
+        const events = await EventRepo.findAll();
         return new SuccessResponse('success', events).send(res);
     })
 )
