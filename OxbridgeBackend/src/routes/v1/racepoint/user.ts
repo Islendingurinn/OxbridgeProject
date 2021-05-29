@@ -7,8 +7,16 @@ import schema from './schema';
 import asyncHandler from '../../../helpers/asyncHandler';
 import { ProtectedRequest } from 'app-request';
 import RacePointRepo from '../../../database/repository/RacePointRepo';
+import authentication from '../../../auth/authentication';
+import authorization from '../../../auth/authorization';
+import role from '../../../helpers/role';
+import { RoleCode } from '../../../database/model/Role';
 
 const router = express.Router();
+
+// Below all APIs are private APIs protected for Access Token and Users Role
+router.use('/', authentication, role(RoleCode.USER), authorization);
+// ---------------------------------------------------------------------------
 
 /**
   * Gets all racepoints in an event

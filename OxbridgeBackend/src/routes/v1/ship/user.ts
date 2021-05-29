@@ -13,8 +13,16 @@ import { AuthFailureError } from '../../../core/ApiError';
 import ShipRepo from '../../../database/repository/ShipRepo';
 import UserRepo from '../../../database/repository/UserRepo';
 import Ship from '../../../database/model/Ship';
+import authentication from '../../../auth/authentication';
+import authorization from '../../../auth/authorization';
+import role from '../../../helpers/role';
+import { RoleCode } from '../../../database/model/Role';
 
 const router = express.Router();
+
+// Below all APIs are private APIs protected for Access Token and Users Role
+router.use('/', authentication, role(RoleCode.USER), authorization);
+// ---------------------------------------------------------------------------
 
 /**
   * Gets all registered ships
