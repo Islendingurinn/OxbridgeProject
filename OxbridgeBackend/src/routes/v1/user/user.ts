@@ -14,7 +14,7 @@ import { RoleCode } from '../../../database/model/Role';
 const router = express.Router();
 
 // Below all APIs are private APIs protected for Access Token and Users Role
-router.use('/', authentication, role(RoleCode.USER), authorization);
+router.use('/', authentication, role(RoleCode.USER), role(RoleCode.ADMIN), authorization);
 // ---------------------------------------------------------------------------
 
 /**
