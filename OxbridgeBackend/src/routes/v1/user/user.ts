@@ -14,14 +14,12 @@ import { Types } from 'mongoose';
 import { getAccessToken } from '../../../auth/authUtils';
 import JWT from '../../../core/JWT';
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';
-import { createTokens } from '../../../auth/authUtils';
 import _ from 'lodash';
 
 const router = express.Router();
 
 // Below all APIs are private APIs protected for Access Token and Users Role
-router.use('/', authentication, role(RoleCode.USER), role(RoleCode.ADMIN), authorization);
+router.use('/', authentication, role(RoleCode.USER), authorization);
 // ---------------------------------------------------------------------------
 
 /**

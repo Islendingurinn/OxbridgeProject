@@ -9,10 +9,10 @@ export default {
         teamName: Joi.string().required().min(3),
     }),
     updateEventRegistration: Joi.object().keys({
-        shipId: JoiObjectId().required(),
-        eventId: JoiObjectId().required(),
-        trackColor: Joi.string().required().min(3),
-        teamName: Joi.string().required().min(3),
+        shipId: JoiObjectId().optional(),
+        eventId: JoiObjectId().optional(),
+        trackColor: Joi.string().optional().min(3),
+        teamName: Joi.string().optional().min(3),
     }),
     eventRegistrationId: Joi.object().keys({
         id: JoiObjectId().required(),
