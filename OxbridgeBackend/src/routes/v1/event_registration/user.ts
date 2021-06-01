@@ -1,6 +1,6 @@
 import express from 'express';
 import { SuccessResponse } from '../../../core/ApiResponse';
-import { NoDataError } from '../../../core/ApiError';
+import { BadRequestError } from '../../../core/ApiError';
 import EventRegistrationRepo from '../../../database/repository/EventRegistrationRepo';
 import EventRegistration from '../../../database/model/EventRegistration';
 import { Types } from 'mongoose';
@@ -48,7 +48,7 @@ router.use('/', authentication, role(RoleCode.USER), authorization);
     validator(schema.eventId, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
         const eventRegistrations = await EventRegistrationRepo.findByEvent(new Types.ObjectId(req.params.id));
-        if(!eventRegistrations) throw new NoDataError('Event does not have any registrations');
+        if(!eventRegistrations) throw new BadRequestError('Event does not have any registrations');
 
         let participants = [];
         for(const registration of eventRegistrations){
@@ -86,15 +86,15 @@ router.use('/', authentication, role(RoleCode.USER), authorization);
 
         //Retrieve the ships the user has registered
         const ships = await ShipRepo.findByUser(user._id);
-        if(!ships) throw new NoDataError('User does not have any ships registered');
+        if(!ships) throw new BadRequestError('User does not have any ships registered');
 
         //Retreive the event registrations assosciated with the ships
         let eventRegistrations: EventRegistration[] = [];
         for(const ship of ships){
             const registrations = await EventRegistrationRepo.findByShipAndEvent(ship._id, new Types.ObjectId(req.params.id));
-            eventRegistrations.concat(registrations);
+            eventRegistrations = eventRegistrations.concat(registrations);
         }
-        if(eventRegistrations) throw new NoDataError('User is not associated with any event registrations');
+        if(!eventRegistrations) throw new BadRequestError('User is not associated with any event registrations');
 
         return new SuccessResponse('success', eventRegistrations).send(res);
     })

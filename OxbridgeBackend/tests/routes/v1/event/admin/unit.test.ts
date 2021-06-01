@@ -17,7 +17,7 @@ import supertest from 'supertest';
 import app from '../../../../../src/app';
 import { Types } from 'mongoose';
 
-describe('POST /v1/admin/events/id', () => {
+describe('POST /v1/admin/events', () => {
   beforeEach(() => {
     mockEventCreate.mockClear();
   });
