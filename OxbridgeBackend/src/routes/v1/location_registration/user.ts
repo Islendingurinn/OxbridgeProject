@@ -48,7 +48,7 @@ router.use('/', authentication, role(RoleCode.USER), authorization);
         const eventRegistrations = await EventRegistrationRepo.findByEvent(
             new Types.ObjectId(req.params.id)
             );
-        if(eventRegistrations.length == 0) throw new NoDataError('Event does not have registrations');
+        if(!eventRegistrations) throw new BadRequestError('Event does not have registrations');
 
         let shipLocations = [];
         for(const registration of eventRegistrations){
@@ -82,12 +82,12 @@ router.use('/', authentication, role(RoleCode.USER), authorization);
   */
  router.get(
     '/scoreboard/fromEvent/:id',
-    validator(schema.eventId),
+    validator(schema.eventId, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
         const eventRegistrations = await EventRegistrationRepo.findByEvent(
             new Types.ObjectId(req.params.id)
             );
-        if(eventRegistrations.length == 0) throw new NoDataError('Event does not have registrations');
+        if(!eventRegistrations) throw new BadRequestError('Event does not have registrations');
 
         let scores = [];
         for(const registration of eventRegistrations){
@@ -97,7 +97,7 @@ router.use('/', authentication, role(RoleCode.USER), authorization);
             const ship = await ShipRepo.findById(registration.shipId);
             if(!ship) continue;
 
-            const user = await UserRepo.findById(ship.userId);
+            const user = await UserRepo.findByIdSecured(ship.userId);
             if(!user) continue;
 
             scores.push({
@@ -155,10 +155,10 @@ router.delete(
     '/fromEventRegistration/:id',
     validator(schema.eventRegistrationId, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
-        const registration = await EventRegistrationRepo.findById(req.body.id);
+        const registration = await EventRegistrationRepo.findById(new Types.ObjectId(req.params.id));
         if(!registration) throw new BadRequestError('Event registration does not exist');
 
-        await LocationRegistrationRepo.deleteFromEventRegistration(req.body.id);
+        await LocationRegistrationRepo.deleteFromEventRegistration(new Types.ObjectId(req.params.id));
         return new SuccessMsgResponse('Location registrations deleted successfully').send(res);
     })
 )
