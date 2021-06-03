@@ -37,12 +37,12 @@ export const mockEventCreate = jest.fn(
 export const mockEventUpdate = jest.fn(
   async (event: Event): Promise<Event> => {
     return event;
-  });
+});
 
-  export const mockEventDelete = jest.fn(
-    async (event: Event): Promise<null> => {
-      return null;
-    });
+export const mockEventDelete = jest.fn(
+  async (event: Event): Promise<null> => {
+    return null;
+});
 
 jest.mock('../../../../../src/database/repository/EventRepo', () => ({
   get findById() {

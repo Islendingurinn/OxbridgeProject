@@ -1,12 +1,13 @@
 import express from 'express';
 import { SuccessResponse } from '../../../core/ApiResponse';
-import { NoDataError } from '../../../core/ApiError';
+import { BadRequestError } from '../../../core/ApiError';
 import { Types } from 'mongoose';
 import validator, { ValidationSource } from '../../../helpers/validator';
 import schema from './schema';
 import asyncHandler from '../../../helpers/asyncHandler';
 import { ProtectedRequest } from 'app-request';
 import RacePointRepo from '../../../database/repository/RacePointRepo';
+import EventRepo from '../../../database/repository/EventRepo';
 import authentication from '../../../auth/authentication';
 import authorization from '../../../auth/authorization';
 import role from '../../../helpers/role';
@@ -27,11 +28,13 @@ router.get(
     '/fromEvent/:id',
     validator(schema.eventId, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
+        const event = await EventRepo.findById(new Types.ObjectId(req.params.id));
+        if(!event) throw new BadRequestError('Event does not exist');
+
         const racepoints = await RacePointRepo.findByEvent(
             new Types.ObjectId(req.params.id),
         );
-
-        if (!racepoints) throw new NoDataError();
+        if (!racepoints) throw new BadRequestError('The event does not have any racepoints');
 
         return new SuccessResponse('success', racepoints).send(res);
     })
@@ -46,11 +49,13 @@ router.get(
     '/startAndFinish/fromEvent/:id',
     validator(schema.eventId, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
+        const event = await EventRepo.findById(new Types.ObjectId(req.params.id));
+        if(!event) throw new BadRequestError('Event does not exist');
+
         const racepoints = await RacePointRepo.findStartAndFinish(
             new Types.ObjectId(req.params.id),
         );
-
-        if (!racepoints) throw new NoDataError();
+        if (!racepoints) throw new BadRequestError('The event does not have any racepoints');
 
         return new SuccessResponse('success', racepoints).send(res);
     })

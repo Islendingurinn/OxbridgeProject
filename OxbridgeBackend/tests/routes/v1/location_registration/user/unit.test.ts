@@ -21,7 +21,6 @@ import {
 import supertest from 'supertest';
 import app from '../../../../../src/app';
 import { Types } from 'mongoose';
-import Logger from '../../../../../src/core/Logger';
 
 describe('GET /v1/locationregistrations', () => {
     beforeEach(() => {
@@ -280,7 +279,6 @@ describe('DELETE /v1/locationregistrations/fromEventRegistration/id', () => {
     });
   
     it('SUCCESS', async () => {
-        Logger.error(endpoint + EVENTREG_ID);
       const response = await addAuthHeaders(
         request.delete(endpoint + EVENTREG_ID),
         USER_ACCESS_TOKEN
@@ -290,5 +288,5 @@ describe('DELETE /v1/locationregistrations/fromEventRegistration/id', () => {
       expect(mockEventRegistrationFindById).toBeCalledTimes(1);
       expect(mockLocationRegistrationDeleteFromEventRegistration).toBeCalledTimes(1);
     });
-  });
+});
 
