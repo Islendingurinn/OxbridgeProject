@@ -1,6 +1,6 @@
 import express from 'express';
 import { SuccessResponse } from '../../../core/ApiResponse';
-import { AuthFailureError, NoDataError } from '../../../core/ApiError';
+import { AuthFailureError, BadRequestError } from '../../../core/ApiError';
 import validator, { ValidationSource } from '../../../helpers/validator';
 import schema from './schema';
 import asyncHandler from '../../../helpers/asyncHandler';
@@ -24,15 +24,15 @@ router.use('/', authentication, role(RoleCode.USER), authorization);
 
 /**
   * Retrieves a user
-  * Route: GET /users/:user
+  * Route: GET /users/:email
   * Return: User
   */
 router.get(
-    '/:user',
+    '/:email',
     validator(schema.email, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
         const user = await UserRepo.findByEmail(req.params.user);
-        if (!user) throw new NoDataError();
+        if (!user) throw new BadRequestError();
 
         return new SuccessResponse('success', user).send(res);
     }),
