@@ -1,6 +1,6 @@
 import express from 'express';
 import { SuccessMsgResponse, SuccessResponse } from '../../../core/ApiResponse';
-import { BadRequestError, NoDataError } from '../../../core/ApiError';
+import { BadRequestError } from '../../../core/ApiError';
 import EventRegistrationRepo from '../../../database/repository/EventRegistrationRepo';
 import { Types } from 'mongoose';
 import validator, { ValidationSource } from '../../../helpers/validator';
@@ -56,7 +56,7 @@ router.get(
 
         //Find user ships from user id
         const ships = await ShipRepo.findByUser(user._id);
-        if(!ships) throw new NoDataError('User does not have any ships registered');
+        if(!ships) throw new BadRequestError('User does not have any ships registered');
 
         return new SuccessResponse('success', ships).send(res);
     })
@@ -72,8 +72,8 @@ router.get(
     '/fromEvent/:id',
     validator(schema.eventId, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
-        const registrations = await EventRegistrationRepo.findByEvent(req.body.id);
-        if(!registrations) throw new NoDataError('No event registrations');
+        const registrations = await EventRegistrationRepo.findByEvent(new Types.ObjectId(req.params.id));
+        if(!registrations) throw new BadRequestError('No event registrations');
 
         let ships = [];
         for(const registration of registrations){
@@ -100,8 +100,8 @@ router.get(
     '/:id',
     validator(schema.shipId, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
-        const ship = await ShipRepo.findById(req.body.id);
-        if(!ship) throw new NoDataError('No ship with this id');
+        const ship = await ShipRepo.findById(new Types.ObjectId(req.params.id));
+        if(!ship) throw new BadRequestError('No ship with this id');
 
         return new SuccessResponse('success', ship).send(res);
     })
@@ -157,7 +157,7 @@ router.delete(
     validator(schema.eventId, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
         const ship = await ShipRepo.findById(new Types.ObjectId(req.params.id));
-        if(ship == null) throw new BadRequestError('Ship does not exist');
+        if(!ship) throw new BadRequestError('Ship does not exist');
 
         await ShipRepo.delete(ship);
         return new SuccessMsgResponse('Ship deleted successfully').send(res);
