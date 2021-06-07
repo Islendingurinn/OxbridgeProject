@@ -35,7 +35,7 @@ export default class EmailConfirmation{
         const event = await EventRepo.findById(this.eventid);
         if(!event) return;
 
-        const info = await transporter.sendMail({
+        await transporter.sendMail({
             from: '"Tregatta" <tregattasonderborg@gmail.com>',
             to: user.email,
             subject: "Du er nu registered for " + event.name + "!",
