@@ -1,6 +1,6 @@
 import express from 'express';
 import { SuccessResponse } from '../../../core/ApiResponse';
-import { AuthFailureError, NoDataError } from '../../../core/ApiError';
+import { AuthFailureError, BadRequestError } from '../../../core/ApiError';
 import validator, { ValidationSource } from '../../../helpers/validator';
 import schema from './schema';
 import asyncHandler from '../../../helpers/asyncHandler';
@@ -14,27 +14,25 @@ import { Types } from 'mongoose';
 import { getAccessToken } from '../../../auth/authUtils';
 import JWT from '../../../core/JWT';
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';
-import { createTokens } from '../../../auth/authUtils';
 import _ from 'lodash';
 
 const router = express.Router();
 
 // Below all APIs are private APIs protected for Access Token and Users Role
-router.use('/', authentication, role(RoleCode.USER), role(RoleCode.ADMIN), authorization);
+router.use('/', authentication, role(RoleCode.USER), authorization);
 // ---------------------------------------------------------------------------
 
 /**
   * Retrieves a user
-  * Route: GET /users/:user
+  * Route: GET /users/:email
   * Return: User
   */
 router.get(
-    '/:user',
+    '/:email',
     validator(schema.email, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
         const user = await UserRepo.findByEmail(req.params.user);
-        if (!user) throw new NoDataError();
+        if (!user) throw new BadRequestError();
 
         return new SuccessResponse('success', user).send(res);
     }),

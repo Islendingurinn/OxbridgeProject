@@ -23,7 +23,7 @@ export default class EmailPasswordReset{
     }
 
     async task(): Promise<void> {
-        const info = await transporter.sendMail({
+        await transporter.sendMail({
             from: '"Tregatta" <tregattasonderborg@gmail.com>',
             to: this.user.email,
             subject: "Anmodning om en ny adgangskode",

@@ -1,6 +1,6 @@
 import express from 'express';
 import { SuccessResponse } from '../../../core/ApiResponse';
-import { NoDataError } from '../../../core/ApiError';
+import { BadRequestError, NoDataError } from '../../../core/ApiError';
 import EventRepo from '../../../database/repository/EventRepo';
 import UserRepo from '../../../database/repository/UserRepo';
 import { Types } from 'mongoose';
@@ -24,7 +24,7 @@ import { RoleCode } from '../../../database/model/Role';
 const router = express.Router();
 
 // Below all APIs are private APIs protected for Access Token and Users Role
-router.use('/', authentication, role(RoleCode.USER), role(RoleCode.ADMIN), authorization);
+router.use('/', authentication, role(RoleCode.USER), authorization);
 // ---------------------------------------------------------------------------
 
 /**
@@ -46,15 +46,15 @@ router.use('/', authentication, role(RoleCode.USER), role(RoleCode.ADMIN), autho
 
         //Find the ships the user has registered
         const ships = await ShipRepo.findByUser(user._id);
-        if(!ships) throw new NoDataError('User does not have any ships registered');
+        if(!ships) throw new BadRequestError('User does not have any ships registered');
 
         //Find the event registrations the ships are participants of
         let eventRegistrations: EventRegistration[] = []; 
         for(const ship of ships){
             const registrations = await EventRegistrationRepo.findByShip(ship._id);
-            eventRegistrations.concat(registrations);
+            eventRegistrations = eventRegistrations.concat(registrations);
         }
-        if(!eventRegistrations) throw new NoDataError('User does not have any event registrations');
+        if(!eventRegistrations) throw new BadRequestError('User does not have any event registrations');
 
         //Find the corresponding events from the event registrations
         let events: Event[] = [];
@@ -62,7 +62,7 @@ router.use('/', authentication, role(RoleCode.USER), role(RoleCode.ADMIN), autho
             const event = await EventRepo.findById(registration.eventId);
             if(event) events.push(event);
         }
-        if(!events) throw new NoDataError('User is not associated with any events');
+        if(!events) throw new BadRequestError('User is not associated with any events');
 
         return new SuccessResponse('success', events).send(res);
     })
@@ -81,7 +81,7 @@ router.use('/', authentication, role(RoleCode.USER), role(RoleCode.ADMIN), autho
             new Types.ObjectId(req.params.id),
         );
 
-        if (!event) throw new NoDataError();
+        if (!event) throw new BadRequestError("Event does not exist");
 
         return new SuccessResponse('success', event).send(res);
     }),
@@ -99,7 +99,7 @@ router.use('/', authentication, role(RoleCode.USER), role(RoleCode.ADMIN), autho
         const event = await EventRepo.findById(
             new Types.ObjectId(req.params.id)
         );
-        if(!event) throw new NoDataError();
+        if(!event) throw new BadRequestError("Event does not exist");
 
         const racepoints = await RacePointRepo.findByEvent(
             new Types.ObjectId(req.params.id)

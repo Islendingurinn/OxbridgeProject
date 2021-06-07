@@ -7,8 +7,8 @@ export default {
         name: Joi.string().required().min(3),
     }),
     updateShip: Joi.object().keys({
-        userId: JoiObjectId().required(),
-        name: Joi.string().required().min(3),
+        userId: JoiObjectId().optional(),
+        name: Joi.string().optional().min(3),
     }),
     shipId: Joi.object().keys({
         id: JoiObjectId().required(),

@@ -10,6 +10,9 @@ import role from '../../../helpers/role';
 import { RoleCode } from '../../../database/model/Role';
 import RacePointRepo from '../../../database/repository/RacePointRepo';
 import RacePoint from '../../../database/model/RacePoint';
+import EventRepo from '../../../database/repository/EventRepo';
+import { Types } from 'mongoose';
+import { BadRequestError } from '../../../core/ApiError';
 
 const router = express.Router();
 
@@ -27,6 +30,8 @@ router.post(
     validator(schema.eventId, ValidationSource.PARAM),
     validator(schema.newRacepoint),
     asyncHandler(async (req: ProtectedRequest, res) => {
+        const event = await EventRepo.findById(new Types.ObjectId(req.params.id));
+        if(!event) throw new BadRequestError('Event does not exist');
 
         const createdRacepoint = await RacePointRepo.create({
             type: req.body.type,
@@ -34,7 +39,7 @@ router.post(
             firstLatitude: req.body.firstLatitude,
             secondLongtitude: req.body.secondLongtitude,
             secondLatitude: req.body.secondLatitude,
-            eventId: req.body.eventId,
+            eventId: event._id,
         } as RacePoint);
 
         new SuccessResponse('Racepoint created successfully', createdRacepoint).send(res);
@@ -50,6 +55,9 @@ router.delete(
     '/fromEvent/:id',
     validator(schema.eventId, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
+        const event = await EventRepo.findById(new Types.ObjectId(req.params.id));
+        if(!event) throw new BadRequestError('Event does not exist');
+
         await RacePointRepo.deleteByEvent(req.body.id);
         return new SuccessMsgResponse('Racepoints deleted successfully').send(res);
     })

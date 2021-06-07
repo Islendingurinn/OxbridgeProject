@@ -9,7 +9,7 @@ export default class EventRepo {
         .exec();
     }
 
-    public static async findHasBeenNotified(): Promise<Event[]> {
+    public static async findHasNotBeenNotified(): Promise<Event[]> {
         return EventModel.find({ notified: false, isLive: false })
         .lean<Event>()
         .exec();
