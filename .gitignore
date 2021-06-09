@@ -366,3 +366,5 @@ FodyWeavers.xsd
 OxbridgeBackend/.env
 OxbridgeBackend/tests/.env.test
 OxbridgeBackend/coverage
+OxbridgeBackend/build
+
