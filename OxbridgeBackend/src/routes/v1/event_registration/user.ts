@@ -59,7 +59,7 @@ router.use('/', authentication, role(RoleCode.USER), authorization);
             const user = await UserRepo.findByIdSecured(ship.userId);
             if(!user) continue;
 
-            participants.push({ user, ship });
+            participants.push({ user, ship, registration });
         }
 
         return new SuccessResponse('success', participants).send(res);

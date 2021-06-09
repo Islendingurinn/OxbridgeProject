@@ -9,6 +9,10 @@ import { RacePointService } from 'src/app/services/race-point.service';
 import { LocationRegistrationService } from 'src/app/services/location-registration.service';
 import { EventRegistrationService } from 'src/app/services/event-registration.service';
 import { Participant } from 'src/app/models/participant';
+import { User } from 'src/app/models/user';
+import { Ship } from 'src/app/models/ship';
+import { of } from 'rxjs';
+import { EventRegistration } from 'src/app/models/event-registration';
 
 
 @Component({
@@ -140,7 +144,20 @@ export class EventComponent implements OnInit {
    * @param event 
    */
   setParticipants(event) {
-    this.participants = this.eventRegService.getParticipants(event.eventId);
+    this.eventRegService.getParticipants(event._id).pipe()
+    .subscribe(result => {
+      let actualParticipants: Participant[] = [];
+
+      for(const line in result){
+        let user: User = Object.assign(new User(), result[line]['user']);
+        let ship: Ship = Object.assign(new Ship(), result[line]['ship']);
+        let registration: EventRegistration = Object.assign(new EventRegistration(), result[line]['registration']);
+        let participantObject: Participant = Object.assign(user, ship, registration);
+        actualParticipants.push(participantObject);
+      }
+      
+      this.participants = of(actualParticipants);
+    });
   }
 
   /**
@@ -148,6 +165,6 @@ export class EventComponent implements OnInit {
    * @param event
    */
   setScoreboard(event) {
-    this.scoreboard = this.locationRegService.getScoreboard(event.eventId);
+    this.scoreboard = this.locationRegService.getScoreboard(event._id);
   }
 }

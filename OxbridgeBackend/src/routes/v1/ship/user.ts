@@ -73,7 +73,7 @@ router.get(
     validator(schema.shipId, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
         const ship = await ShipRepo.findById(req.body.id);
-        if(!ship) throw new NoDataError('No ship with this id');
+        if(!ship) throw new BadRequestError('No ship with this id');
 
         return new SuccessResponse('success', ship).send(res);
     })

@@ -29,7 +29,15 @@ export class UserService {
         'x-api-key': apiKey
       })
     }
-    return this.http.post<User>("http://localhost:3000/v1/signup/", newUser, httpOptions).pipe(map(user => {
+
+    let object = {
+      "email": newUser.email,
+      "password": newUser.password,
+      "firstname": newUser.firstname,
+      "lastname": newUser.lastname
+    }
+
+    return this.http.post<User>("http://localhost:3000/v1/signup/", object, httpOptions).pipe(map(user => {
       return user['data'];
     }));
   }

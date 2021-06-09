@@ -71,16 +71,16 @@
                             name="lastname">
                     </td>
                     <td>
-                        <input class="form-control" required [(ngModel)]="participant.shipName" #shipName="ngModel"
-                            name="shipName">
+                        <input class="form-control" required [(ngModel)]="participant.name" #name="ngModel"
+                            name="name">
                     </td>
                     <td>
                         <input class="form-control" required [(ngModel)]="participant.teamName" #teamName="ngModel"
                             name="teamName">
                     </td>
                     <td>
-                        <input class="form-control" required [(ngModel)]="participant.emailUsername"
-                            #emailUsername="ngModel" name="emailUsername" disabled>
+                        <input class="form-control" required [(ngModel)]="participant.email"
+                            #email="ngModel" name="email" disabled>
                     </td>
                     <td><button type="button" class="btn btn-outline-info"
                             (click)="editParticipant(participant)">Gem</button></td>
@@ -120,7 +120,7 @@
                 <div class="row justify-content-center pb-2">
                     <div class="col">
                         <input class="form-control mr-sm-2 form-control-sm" placeholder="Bådnavn" required
-                            [(ngModel)]="model.shipName" #shipName="ngModel" name="shipName">
+                            [(ngModel)]="model.name" #name="ngModel" name="name">
                     </div>
                     <div class="col">
                         <input class="form-control mr-sm-2 form-control-sm" placeholder="Teamnavn" required
@@ -130,7 +130,7 @@
                 <div class="row justify-content-center pr-3">
                     <div class="col">
                         <input class="form-control mr-sm-2 form-control-sm" placeholder="Email" required
-                            [(ngModel)]="model.emailUsername" #email="ngModel" name="email">
+                            [(ngModel)]="model.email" #email="ngModel" name="email">
                     </div>
                     <button class="btn btn-info my-sm-0 btn-sm " type="submit"
                         [disabled]="!AddParticipantForm.form.valid">Tilmeld</button>

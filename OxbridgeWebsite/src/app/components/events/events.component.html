@@ -19,7 +19,7 @@
                     <img id="eventIcon" src="../../../assets/images/pin.png">
                 </div>
                 <div class="col-sm">
-                    <a id="eventLink" class="btn btn-link" [routerLink]="['/events', event.eventId, event.name]" routerLinkActive="active"><h4 class="pt-1">{{event.name}}</h4></a>
+                    <a id="eventLink" class="btn btn-link" [routerLink]="['/events', event._id, event.name]" routerLinkActive="active"><h4 class="pt-1">{{event.name}}</h4></a>
                     <div id="date" class="row pl-3">
                         <label>{{event.eventStart | date:'d. MMM yyyy'}} - {{event.eventEnd | date:'d. MMM yyyy'}}</label>
                     </div>
@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="col-sm pt-4" *ngIf="event.isLive">
-                    <button class="btn btn-info" [routerLink]="['/events', event.eventId, event.name, 'live']" routerLinkActive="active">Se live</button>
+                    <button class="btn btn-info" [routerLink]="['/events', event._id, event.name, 'live']" routerLinkActive="active">Se live</button>
                 </div>
             </div>
         </div>

@@ -33,9 +33,9 @@ export class LoginComponent implements OnInit {
       .subscribe(user => {
         let userObject = Object.assign(new User(), user['user']);
         userObject.accessToken = user['tokens']['accessToken'];
-        this.cookieService.set('user', JSON.stringify(userObject), 1);
         const admin = isAdmin(userObject.roles);
         user.admin = admin;
+        this.cookieService.set('user', JSON.stringify(userObject), 1);
 
         if (admin) {
           this.router.navigate(['/administrerEvents']);

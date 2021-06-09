@@ -113,7 +113,15 @@ export class EventService {
         'Authorization': 'Bearer ' + user.accessToken
       })
     }
-    return this.http.put(this.adminEventsUrl+event._id, event, httpOptions).pipe(map(event => {return event['data']}));
+
+    let object = {
+      "name": event.name,
+      "eventStart": event.eventStart,
+      "eventEnd": event.eventEnd,
+      "city": event.city
+    }
+
+    return this.http.put(this.adminEventsUrl+event._id, object, httpOptions).pipe(map(event => {return event['data']}));
   }
 
   /**
@@ -145,7 +153,7 @@ export class EventService {
         'Authorization': 'Bearer ' + user.accessToken
       })
     }
-    return this.http.get<boolean>(this.userEventsUrl+"hasRoute/"+_id, httpOptions).pipe(map(res => { return res['data'] }))
+    return this.http.get<boolean>(this.userEventsUrl + _id + "/hasRoute", httpOptions).pipe(map(res => { return res['data'] }))
   }
 
   /**
@@ -161,7 +169,7 @@ export class EventService {
         'Authorization': 'Bearer ' + user.accessToken
       })
     }
-    return this.http.put<Event>(this.userEventsUrl+"start/"+_id, httpOptions).pipe(map(event => { return event['data'] }));
+    return this.http.put<Event>(this.adminEventsUrl+"start/"+_id, null, httpOptions).pipe(map(event => { return event['data'] }));
   }
 
   /**
@@ -177,7 +185,7 @@ export class EventService {
         'Authorization': 'Bearer ' + user.accessToken
       })
     }
-    return this.http.get<Event>(this.userEventsUrl+"stop/"+_id, httpOptions).pipe(map(event => {return event['data']}));
+    return this.http.put<Event>(this.adminEventsUrl+"stop/"+_id, null, httpOptions).pipe(map(event => {return event['data']}));
   }
 
   /**
