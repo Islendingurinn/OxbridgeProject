@@ -35,6 +35,15 @@ export default class UserRepo {
     }
 
     public static async findByEmail(email: string): Promise<User | null> {
+      return UserModel.findOne({ email: email })
+        .populate({
+          path: 'roles',
+        })
+        .lean<User>()
+        .exec();
+    }
+
+    public static async findByEmailSecured(email: string): Promise<User | null> {
         return UserModel.findOne({ email: email })
           .populate({
             path: 'roles',

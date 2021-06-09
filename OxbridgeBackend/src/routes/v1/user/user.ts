@@ -7,12 +7,22 @@ import asyncHandler from '../../../helpers/asyncHandler';
 import { ProtectedRequest } from 'app-request';
 import { getAccessToken } from '../../../auth/authUtils';
 import UserRepo from '../../../database/repository/UserRepo';
+import authentication from '../../../auth/authentication';
+import authorization from '../../../auth/authorization';
+import role from '../../../helpers/role';
+import { RoleCode } from '../../../database/model/Role';
+import { Types } from 'mongoose';
 import JWT from '../../../core/JWT';
 import bcrypt from 'bcrypt';
-import { Types } from 'mongoose';
+import crypto from 'crypto';
+import { createTokens } from '../../../auth/authUtils';
 import _ from 'lodash';
 
 const router = express.Router();
+
+// Below all APIs are private APIs protected for Access Token and Users Role
+router.use('/', authentication, role(RoleCode.USER), role(RoleCode.ADMIN), authorization);
+// ---------------------------------------------------------------------------
 
 /**
   * Retrieves a user

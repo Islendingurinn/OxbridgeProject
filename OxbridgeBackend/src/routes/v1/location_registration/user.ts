@@ -11,8 +11,16 @@ import ShipRepo from '../../../database/repository/ShipRepo';
 import UserRepo from '../../../database/repository/UserRepo';
 import LocationRegistrationRepo from '../../../database/repository/LocationRegistrationRepo';
 import LocationRegistration from '../../../database/model/LocationRegistration';
+import authentication from '../../../auth/authentication';
+import authorization from '../../../auth/authorization';
+import role from '../../../helpers/role';
+import { RoleCode } from '../../../database/model/Role';
 
 const router = express.Router();
+
+// Below all APIs are private APIs protected for Access Token and Users Role
+router.use('/', authentication, role(RoleCode.USER), role(RoleCode.ADMIN), authorization);
+// ---------------------------------------------------------------------------
 
 /**
   * Gets all location registrations

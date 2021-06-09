@@ -43,34 +43,11 @@ router.post(
 )
 
 /**
-  * Updates an existing event
-  * Route: PUT /admin/events/:id
-  * Return: Event
-  */
-router.put(
-    '/:id',
-    validator(schema.eventId, ValidationSource.PARAM),
-    validator(schema.updateEvent),
-    asyncHandler(async (req: ProtectedRequest, res) => {
-        const event = await EventRepo.findById(new Types.ObjectId(req.params.id));
-        if(event == null) throw new BadRequestError('Event does not exist');
-
-        if(req.body.name) event.name = req.body.name;
-        if(req.body.eventStart) event.eventStart = req.body.eventStart;
-        if(req.body.eventEnd) event.eventEnd = req.body.eventEnd;
-        if(req.body.city) event.city = req.body.eventEnd;
-
-        await EventRepo.update(event);
-        new SuccessResponse('Event updated successfully', event).send(res);
-    })
-)
-
-/**
   * Sets event status to live
   * Route: PUT /admin/events/start/:id
   * Return: Event
   */
-router.put(
+ router.put(
     '/start/:id',
     validator(schema.eventId, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
@@ -91,7 +68,7 @@ router.put(
   * Route: PUT /admin/events/stop/:id
   * Return: Event
   */
-router.put(
+ router.put(
     '/stop/:id',
     validator(schema.eventId, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
@@ -103,6 +80,29 @@ router.put(
 
         await EventRepo.update(event);
         new SuccessResponse('Event has successfully been stopped', event).send(res);
+    })
+)
+
+/**
+  * Updates an existing event
+  * Route: PUT /admin/events/:id
+  * Return: Event
+  */
+router.put(
+    '/:id',
+    validator(schema.eventId, ValidationSource.PARAM),
+    validator(schema.updateEvent),
+    asyncHandler(async (req: ProtectedRequest, res) => {
+        const event = await EventRepo.findById(new Types.ObjectId(req.params.id));
+        if(event == null) throw new BadRequestError('Event does not exist');
+
+        if(req.body.name) event.name = req.body.name;
+        if(req.body.eventStart) event.eventStart = req.body.eventStart;
+        if(req.body.eventEnd) event.eventEnd = req.body.eventEnd;
+        if(req.body.city) event.city = req.body.eventEnd;
+
+        await EventRepo.update(event);
+        new SuccessResponse('Event updated successfully', event).send(res);
     })
 )
 
