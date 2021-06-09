@@ -23,11 +23,11 @@ const routes: Routes = [
   { path: 'logind', component: LoginComponent },
   { path: 'mineEvents', component: UserDashboardComponent, canActivate: [AuthGuard], data: {expectedRole: 'user' }},
   { path: 'administrerEvents', component: AdminDashboardComponent, canActivate: [AuthGuard], data: {expectedRole: 'admin' }},
-  { path: 'events/:eventId/:name', component: EventComponent },
-  { path: 'events/:eventId/:name/live', component: LiveEventComponent},
+  { path: 'events/:_id/:name', component: EventComponent },
+  { path: 'events/:_id/:name/live', component: LiveEventComponent},
   { path: 'profil', component: ProfileComponent, canActivate: [AuthGuard], data: { expectedRole: 'user' }},
-  { path: 'administrerEvent/:eventId/:name', component: AdminEventComponent, canActivate: [AuthGuard], data: { expectedRole: 'admin' }},
-  { path: 'administrerEvent/:eventId/:name/ruteplanner', component: RutePlannerComponent, canActivate: [AuthGuard], data: { expectedRole: 'admin' }},
+  { path: 'administrerEvent/:_id/:name', component: AdminEventComponent, canActivate: [AuthGuard], data: { expectedRole: 'admin' }},
+  { path: 'administrerEvent/:_id/:name/ruteplanner', component: RutePlannerComponent, canActivate: [AuthGuard], data: { expectedRole: 'admin' }},
   { path: '', redirectTo:'/hjem', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent }
 ];

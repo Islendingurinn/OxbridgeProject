@@ -9,6 +9,10 @@ import { RacePointService } from 'src/app/services/race-point.service';
 import { LocationRegistrationService } from 'src/app/services/location-registration.service';
 import { EventRegistrationService } from 'src/app/services/event-registration.service';
 import { Participant } from 'src/app/models/participant';
+import { User } from 'src/app/models/user';
+import { Ship } from 'src/app/models/ship';
+import { of } from 'rxjs';
+import { EventRegistration } from 'src/app/models/event-registration';
 
 
 @Component({
@@ -36,7 +40,7 @@ export class EventComponent implements OnInit {
   ngOnInit(): void {
     this.event = this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
-        this.eventService.getEvent(parseInt(params.get('eventId'))))
+        this.eventService.getEvent(params.get('_id')))
     );
 
     //Showing event info depending on the event state
@@ -56,7 +60,7 @@ export class EventComponent implements OnInit {
 
     //Setting the map if the event has a route planned
     this.route.paramMap.pipe(switchMap((params: ParamMap) => {
-      return this.eventService.hasRoute(parseInt(params.get('eventId')))
+      return this.eventService.hasRoute(params.get('_id'))
     })).subscribe(route => {
       if (route) {
         this.hasRoute = true;
@@ -79,7 +83,7 @@ export class EventComponent implements OnInit {
     this.map = new google.maps.Map(this.gmap.nativeElement, this.mapOptions);
 
     this.route.paramMap.pipe(switchMap((params: ParamMap) => {
-      return this.racePointService.getAllEventRacePoints(parseInt(params.get('eventId'))).pipe(racePoints => { return racePoints })
+      return this.racePointService.getAllEventRacePoints(params.get('_id')).pipe(racePoints => { return racePoints })
     })).subscribe(racePoints => {
       racePoints.forEach(racePoint => {
         this.placeMarker(new google.maps.LatLng(racePoint.firstLatitude, racePoint.firstLongtitude), racePoint.type);
@@ -140,7 +144,20 @@ export class EventComponent implements OnInit {
    * @param event 
    */
   setParticipants(event) {
-    this.participants = this.eventRegService.getParticipants(event.eventId);
+    this.eventRegService.getParticipants(event._id).pipe()
+    .subscribe(result => {
+      let actualParticipants: Participant[] = [];
+
+      for(const line in result){
+        let user: User = Object.assign(new User(), result[line]['user']);
+        let ship: Ship = Object.assign(new Ship(), result[line]['ship']);
+        let registration: EventRegistration = Object.assign(new EventRegistration(), result[line]['registration']);
+        let participantObject: Participant = Object.assign(user, ship, registration);
+        actualParticipants.push(participantObject);
+      }
+      
+      this.participants = of(actualParticipants);
+    });
   }
 
   /**
@@ -148,6 +165,6 @@ export class EventComponent implements OnInit {
    * @param event
    */
   setScoreboard(event) {
-    this.scoreboard = this.locationRegService.getScoreboard(event.eventId);
+    this.scoreboard = this.locationRegService.getScoreboard(event._id);
   }
 }

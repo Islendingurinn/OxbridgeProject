@@ -9,6 +9,12 @@ export default class EventRepo {
         .exec();
     }
 
+    public static async findByCode(code: string): Promise<Event | null> {
+        return EventModel.findOne({ eventCode: code })
+        .lean<Event>()
+        .exec();
+    }
+
     public static async findHasNotBeenNotified(): Promise<Event[]> {
         return EventModel.find({ notified: false, isLive: false })
         .lean<Event>()

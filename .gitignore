@@ -364,5 +364,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 OxbridgeBackend/.env
-OxbridgeBackend/tests/.env.test
 OxbridgeBackend/coverage
+OxbridgeBackend/tests/.env.test
+OxbridgeWebsite/src/environments/environment.ts

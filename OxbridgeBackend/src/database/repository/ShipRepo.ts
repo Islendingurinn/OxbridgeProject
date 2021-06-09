@@ -16,7 +16,7 @@ export default class ShipRepo {
     }
 
     public static async findByUser(_id: Types.ObjectId): Promise<Ship[]> {
-        return ShipModel.find({ _id: _id})
+        return ShipModel.find({ userId: _id})
         .lean<Ship>()
         .exec();
     }

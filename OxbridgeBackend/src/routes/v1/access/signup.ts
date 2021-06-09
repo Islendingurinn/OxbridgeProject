@@ -36,6 +36,8 @@ router.post(
             {
                 email: req.body.email,
                 password: passwordHash,
+                firstname: req.body.firstname,
+                lastname: req.body.lastname,
             } as User,
             accessTokenKey,
             refreshTokenKey,
@@ -44,7 +46,7 @@ router.post(
 
         const tokens = await createTokens(createdUser, keystore.primaryKey, keystore.secondaryKey);
         new SuccessResponse('Signup successful', {
-            user: _.pick(createdUser, ['_id', 'email', 'roles']),
+            user: _.pick(createdUser, ['_id', 'email', 'roles', 'firstname', 'lastname']),
             tokens: tokens,
         }).send(res);
     }),
