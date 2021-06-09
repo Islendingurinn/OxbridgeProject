@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class HttpService {
   final String eventsURL = 'http://localhost:3000/v1/events';
 
-
+//get events
   Future<List<Event>> getEvents() async {
     Response res = await get(Uri.parse(eventsURL), 
     headers: {
@@ -34,9 +34,10 @@ class HttpService {
       throw "Unable to retrieve events.";
     }
   }
-  Future<dynamic> postRequest (email,password) async {
+  //register new user
+  Future<dynamic> postRequest (firstName,lastName,email,password) async {
   var url ='http://localhost:3000/v1/signup';
-  var body = jsonEncode({ 'email':email,'password':password });
+  var body = jsonEncode({'firstname':firstName, 'lastname':lastName, 'email':email,'password':password });
   var token= "";
 
   print("Body: " + body);
@@ -59,8 +60,8 @@ class HttpService {
   });
    SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('accessToken', token);
- // String tokens = prefs.getString('token');
-  //print(tokens);
+  String tokens = prefs.getString('token');
+  print(tokens);
  }
 
 }

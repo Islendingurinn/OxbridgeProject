@@ -87,7 +87,7 @@ class _AddUserState extends State<AddUser> {
                  lastNameController.text !="" &&
                   emailController.text !="" &&
                    passwordController.text !=""){
-                     api.postRequest( emailController.text, passwordController.text);
+                     api.postRequest(firstNameController.text,lastNameController.text, emailController.text, passwordController.text);
                    }else{
                      showDialog(context: context, 
                      builder: (BuildContext context){return alert;});
