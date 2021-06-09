@@ -36,7 +36,6 @@ export default class UserRepo {
 
     public static async findByEmail(email: string): Promise<User | null> {
         return UserModel.findOne({ email: email })
-          .select("-password")
           .populate({
             path: 'roles',
           })

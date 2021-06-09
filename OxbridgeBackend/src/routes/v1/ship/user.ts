@@ -30,27 +30,11 @@ router.get(
 )
 
 /**
-  * Gets a registered ship
-  * Route: GET /ships/:id
-  * Return: Ship
-  */
-router.get(
-    '/:id',
-    validator(schema.shipId, ValidationSource.PARAM),
-    asyncHandler(async (req: ProtectedRequest, res) => {
-        const ship = await ShipRepo.findById(req.body.id);
-        if(!ship) throw new NoDataError('No ship with this id');
-
-        return new SuccessResponse('success', ship).send(res);
-    })
-)
-
-/**
   * Gets all ships of the user
   * Route: GET /ships/mine
   * Return: Ship[]
   */
-router.get(
+ router.get(
     '/mine',
     asyncHandler(async (req: ProtectedRequest, res) => {
         //Retrieve the payload from the authorization header
@@ -67,6 +51,23 @@ router.get(
         if(!ships) throw new NoDataError('User does not have any ships registered');
 
         return new SuccessResponse('success', ships).send(res);
+    })
+)
+
+
+/**
+  * Gets a registered ship
+  * Route: GET /ships/:id
+  * Return: Ship
+  */
+router.get(
+    '/:id',
+    validator(schema.shipId, ValidationSource.PARAM),
+    asyncHandler(async (req: ProtectedRequest, res) => {
+        const ship = await ShipRepo.findById(req.body.id);
+        if(!ship) throw new NoDataError('No ship with this id');
+
+        return new SuccessResponse('success', ship).send(res);
     })
 )
 

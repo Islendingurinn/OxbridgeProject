@@ -26,14 +26,13 @@ export class RegistrationComponent implements OnInit {
   OnSubmit() {
     this.userService.registerUser(this.model).pipe(first())
       .subscribe(user => {
-        this.model.role = "user";
         this.cookieService.set('user', JSON.stringify(this.model), 1);
         this.router.navigateByUrl('/mineEvents');
         this.appComponent.updateUser();
       },
         error => {
           if (error.status === 409) {
-            this.model.emailUsername = "";
+            this.model.email = "";
             this.isAvaliable = false;
           }
         });

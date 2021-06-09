@@ -33,6 +33,48 @@ const router = express.Router();
     })
 )
 
+
+/**
+  * Gets all events a user participates in
+  * Route: GET /events/mine
+  * Return: Event[]
+  */
+ router.get(
+    '/mine',
+    asyncHandler(async (req: ProtectedRequest, res) => {
+        //Retrieve the payload from the current authentication tokens
+        req.accessToken = getAccessToken(req.headers.authorization); // Express headers are auto converted to lowercase
+        const payload = await JWT.validate(req.accessToken);
+
+        //Find the user from the user id in the payload
+        const user = await UserRepo.findById(new Types.ObjectId(payload.sub));
+        if (!user) throw new AuthFailureError('User not registered');
+        req.user = user;
+
+        //Find the ships the user has registered
+        const ships = await ShipRepo.findByUser(user._id);
+        if(!ships) throw new NoDataError('User does not have any ships registered');
+
+        //Find the event registrations the ships are participants of
+        let eventRegistrations: EventRegistration[] = []; 
+        for(const ship of ships){
+            const registrations = await EventRegistrationRepo.findByShip(ship._id);
+            eventRegistrations.concat(registrations);
+        }
+        if(!eventRegistrations) throw new NoDataError('User does not have any event registrations');
+
+        //Find the corresponding events from the event registrations
+        let events: Event[] = [];
+        for(const registration of eventRegistrations){
+            const event = await EventRepo.findById(registration.eventId);
+            if(event) events.push(event);
+        }
+        if(!events) throw new NoDataError('User is not associated with any events');
+
+        return new SuccessResponse('success', events).send(res);
+    })
+)
+
 /**
   * Get an event by id
   * Route: GET /events/:id
@@ -74,47 +116,6 @@ router.get(
         if(racepoints.length !== 0) result = true;
 
         return new SuccessResponse('success', result).send(res);
-    })
-)
-
-/**
-  * Gets all events a user participates in
-  * Route: GET /events/mine
-  * Return: Event[]
-  */
-router.get(
-    '/mine',
-    asyncHandler(async (req: ProtectedRequest, res) => {
-        //Retrieve the payload from the current authentication tokens
-        req.accessToken = getAccessToken(req.headers.authorization); // Express headers are auto converted to lowercase
-        const payload = await JWT.validate(req.accessToken);
-
-        //Find the user from the user id in the payload
-        const user = await UserRepo.findById(new Types.ObjectId(payload.sub));
-        if (!user) throw new AuthFailureError('User not registered');
-        req.user = user;
-
-        //Find the ships the user has registered
-        const ships = await ShipRepo.findByUser(user._id);
-        if(!ships) throw new NoDataError('User does not have any ships registered');
-
-        //Find the event registrations the ships are participants of
-        let eventRegistrations: EventRegistration[] = []; 
-        for(const ship of ships){
-            const registrations = await EventRegistrationRepo.findByShip(ship._id);
-            eventRegistrations.concat(registrations);
-        }
-        if(!eventRegistrations) throw new NoDataError('User does not have any event registrations');
-
-        //Find the corresponding events from the event registrations
-        let events: Event[] = [];
-        for(const registration of eventRegistrations){
-            const event = await EventRepo.findById(registration.eventId);
-            if(event) events.push(event);
-        }
-        if(!events) throw new NoDataError('User is not associated with any events');
-
-        return new SuccessResponse('success', events).send(res);
     })
 )
 

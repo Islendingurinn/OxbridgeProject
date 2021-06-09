@@ -36,7 +36,13 @@ export class AdminDashboardComponent implements OnInit {
     this.filter$ = this.filter.valueChanges.pipe(startWith(''));
 
     this.filteredEvents = combineLatest(this.events, this.filter$)
-      .pipe(map(([events, filterString]) => events.filter(event => event.name.toLowerCase().indexOf(filterString.toLowerCase()) !== -1 || event.city.toLowerCase().indexOf(filterString.toLowerCase()) !== -1)));
+      .pipe(
+        map(([events, filterString]) => 
+        events.filter(event => 
+          event.name.toLowerCase().indexOf(filterString.toLowerCase()) !== -1 
+          || event.city.toLowerCase().indexOf(filterString.toLowerCase()) !== -1)
+        )
+      );
   }
 
   /**

@@ -5,7 +5,7 @@
 
         <!-- Login form -->
         <form class="form" (ngSubmit)="OnSubmit()">
-            <input class="form-control" type="text" placeholder="Email/brugernavn" [(ngModel)]="model.emailUsername"
+            <input class="form-control" type="text" placeholder="Email" [(ngModel)]="model.email"
                 name="email" #email="ngModel">
             <input class="form-control" type="password" placeholder="Adgangskode" [(ngModel)]="model.password"
                 name="password" #password="ngModel">

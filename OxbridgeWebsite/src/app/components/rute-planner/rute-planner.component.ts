@@ -30,7 +30,7 @@ export class RutePlannerComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
-        this.eventService.getEvent(parseInt(params.get('eventId'))).pipe(event => { return event }))).subscribe(event => { this.event = event });
+        this.eventService.getEvent(params.get('_id')).pipe(event => { return event }))).subscribe(event => { this.event = event });
   }
 
   constructor(private route: ActivatedRoute, private eventService: EventService, private racePointService: RacePointService, private location: Location) {
@@ -108,7 +108,7 @@ export class RutePlannerComponent implements OnInit {
 
     //Setting the already planned event markers 
     this.route.paramMap.pipe(switchMap((params: ParamMap) => {
-      return this.racePointService.getAllEventRacePoints(parseInt(params.get('eventId'))).pipe(racePoints => { return racePoints })
+      return this.racePointService.getAllEventRacePoints(params.get('_id')).pipe(racePoints => { return racePoints })
     })).subscribe(racePoints => {
       racePoints.forEach(racePoint => {
         this.placeMarker(new google.maps.LatLng(racePoint.firstLatitude, racePoint.firstLongtitude));
@@ -168,7 +168,7 @@ export class RutePlannerComponent implements OnInit {
   saveRoute() {
     this.racePoints = [];
     this.checkPoints.forEach(checkpoint => {
-      let newRacePoint = new RacePoint(checkpoint.pin1.getPosition().lng(), checkpoint.pin1.getPosition().lat(), checkpoint.pin2.getPosition().lng(), checkpoint.pin2.getPosition().lat(), parseInt(this.event.eventId), this.racePoints.length + 1);
+      let newRacePoint = new RacePoint(checkpoint.pin1.getPosition().lng(), checkpoint.pin1.getPosition().lat(), checkpoint.pin2.getPosition().lng(), checkpoint.pin2.getPosition().lat(), this.event._id, this.racePoints.length + 1);
       if (checkpoint.id === 1)
         newRacePoint.type = "startLine";
       else if (checkpoint.id === this.checkPoints.length)
@@ -179,7 +179,7 @@ export class RutePlannerComponent implements OnInit {
       this.racePoints.push(newRacePoint);
     });
 
-    this.racePointService.saveRoute(this.racePoints, parseInt(this.event.eventId)).pipe().subscribe(racepoints => {
+    this.racePointService.saveRoute(this.racePoints, parseInt(this.event._id)).pipe().subscribe(racepoints => {
       this.location.back();
     },
       error => {

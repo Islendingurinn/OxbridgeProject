@@ -51,13 +51,13 @@ export class AdminEventComponent implements OnInit {
     this.setParticipants();
 
     this.event.subscribe(event => {
-      this.eventId = event.eventId
-      this.model = new Participant("", "", "", "", "", event.eventId, "")
+      this.eventId = event._id
+      this.model = new Participant("", "", "", "", "", event._id, "")
     });
 
     //Checks if the event has a route or not
     this.route.paramMap.pipe(switchMap((params: ParamMap) => {
-      return this.eventService.hasRoute(parseInt(params.get('eventId')))
+      return this.eventService.hasRoute(params.get('_id'))
     })).subscribe(hasRoute => {
       if (hasRoute)
         this.buttonText = "Se Rute";
@@ -72,7 +72,7 @@ export class AdminEventComponent implements OnInit {
   setParticipants() {
     this.participants = this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
-        this.eventRegService.getParticipants(parseInt(params.get('eventId'))))
+        this.eventRegService.getParticipants(params.get('_id')))
     )
 
     this.filter = new FormControl('');
@@ -94,7 +94,7 @@ export class AdminEventComponent implements OnInit {
   setEvent() {
     this.event = this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
-        this.eventService.getEvent(parseInt(params.get('eventId'))).pipe(tap(event => {
+        this.eventService.getEvent(params.get('_id')).pipe(tap(event => {
           this.eventForm.patchValue(event);
 
           //Formatting the dates and times
@@ -123,8 +123,8 @@ export class AdminEventComponent implements OnInit {
     newEvent.city = this.eventForm.controls['city'].value;
 
     this.event.subscribe(event => {
-      newEvent.eventId = event.eventId;
-      this.eventService.updateEvent(newEvent, newEvent.eventId).subscribe(event => {
+      newEvent._id = event._id;
+      this.eventService.updateEvent(newEvent).subscribe(event => {
         alert("De nye eventinformationer er gemt");
         this.setEvent();
       },
@@ -138,28 +138,30 @@ export class AdminEventComponent implements OnInit {
    * Event handler for submitting a new participant to the event
    * @param form 
    */
+  //TODO: Fixing
   onSubmit(form: NgForm) {
-    this.eventRegService.addParticipant(this.model).pipe()
+    /*this.eventRegService.SignUpForEvent(this.model).pipe()
       .subscribe(participant => {
         this.setParticipants();
         form.reset();
       },
         error => {
           console.log(error.status);
-        });
+        });*/
   }
 
   /**
    * Event handler for submitting changes to a given participants information
    * @param participant 
    */
+  //TODO: Fixing
   editParticipant(participant) {
-    this.eventRegService.updateParticipant(participant).subscribe(participant => {
+    /*this.eventRegService.updateParticipant(participant).subscribe(participant => {
       alert("Deltagerens nye informationer er gemt");
       this.setParticipants();
     }, error => {
       console.log(error.status);
-    });
+    });*/
   }
 
   /**

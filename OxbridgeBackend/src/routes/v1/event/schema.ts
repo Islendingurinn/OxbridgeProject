@@ -6,6 +6,7 @@ export default {
         name: Joi.string().required().min(3),
         eventStart: Joi.date().required(),
         eventEnd: Joi.date().required(),
+        eventCode: Joi.string().required().min(3),
         city: Joi.string().required().min(3),
     }),
     updateEvent: Joi.object().keys({

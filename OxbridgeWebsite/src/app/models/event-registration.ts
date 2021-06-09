@@ -4,6 +4,7 @@ export class EventRegistration {
         public eventId: number, 
         public teamName: string, 
         public trackColor?: string, 
-        public eventRegId?: number 
+        public eventRegId?: number,
+        public _id?: string
         ){}
 }

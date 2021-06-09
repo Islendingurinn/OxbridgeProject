@@ -36,7 +36,7 @@ export class EventComponent implements OnInit {
   ngOnInit(): void {
     this.event = this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
-        this.eventService.getEvent(parseInt(params.get('eventId'))))
+        this.eventService.getEvent(params.get('_id')))
     );
 
     //Showing event info depending on the event state
@@ -56,7 +56,7 @@ export class EventComponent implements OnInit {
 
     //Setting the map if the event has a route planned
     this.route.paramMap.pipe(switchMap((params: ParamMap) => {
-      return this.eventService.hasRoute(parseInt(params.get('eventId')))
+      return this.eventService.hasRoute(params.get('_id'))
     })).subscribe(route => {
       if (route) {
         this.hasRoute = true;
@@ -79,7 +79,7 @@ export class EventComponent implements OnInit {
     this.map = new google.maps.Map(this.gmap.nativeElement, this.mapOptions);
 
     this.route.paramMap.pipe(switchMap((params: ParamMap) => {
-      return this.racePointService.getAllEventRacePoints(parseInt(params.get('eventId'))).pipe(racePoints => { return racePoints })
+      return this.racePointService.getAllEventRacePoints(params.get('_id')).pipe(racePoints => { return racePoints })
     })).subscribe(racePoints => {
       racePoints.forEach(racePoint => {
         this.placeMarker(new google.maps.LatLng(racePoint.firstLatitude, racePoint.firstLongtitude), racePoint.type);

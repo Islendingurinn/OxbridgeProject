@@ -38,7 +38,7 @@ export class LiveEventComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
-        this.eventService.getEvent(parseInt(params.get('eventId'))).pipe(event => { return event }))).subscribe(event => { this.event = event });
+        this.eventService.getEvent(params.get('_id')).pipe(event => { return event }))).subscribe(event => { this.event = event });
   }
 
   ngAfterViewInit() {
@@ -52,7 +52,7 @@ export class LiveEventComponent implements OnInit {
     this.map = new google.maps.Map(this.gmap.nativeElement, this.mapOptions);
 
     this.route.paramMap.pipe(switchMap((params: ParamMap) => {
-      return this.racePointService.getStartAndFinish(parseInt(params.get('eventId'))).pipe(racePoints => { return racePoints })
+      return this.racePointService.getStartAndFinish(params.get('_id')).pipe(racePoints => { return racePoints })
     })).subscribe(racePoints => {
       console.log("racepoints lenght" + racePoints.length)
       this.placeMarker(new google.maps.LatLng(racePoints[0].firstLatitude, racePoints[0].firstLongtitude), '../assets/images/startline.png');
@@ -111,7 +111,7 @@ export class LiveEventComponent implements OnInit {
    */
   initializeBoatTracking() {
     this.timer = setInterval(() => {
-      this.locationRegService.getLive(this.event.eventId).subscribe(scores => {
+      this.locationRegService.getLive(this.event._id).subscribe(scores => {
         this.setBoatMarkers(scores);
         return scores;
       }, error => {

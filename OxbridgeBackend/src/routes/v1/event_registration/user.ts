@@ -1,6 +1,6 @@
 import express from 'express';
 import { SuccessResponse } from '../../../core/ApiResponse';
-import { NoDataError } from '../../../core/ApiError';
+import { BadRequestError, NoDataError } from '../../../core/ApiError';
 import EventRegistrationRepo from '../../../database/repository/EventRegistrationRepo';
 import EventRegistration from '../../../database/model/EventRegistration';
 import { Types } from 'mongoose';
@@ -13,6 +13,7 @@ import JWT from '../../../core/JWT';
 import { AuthFailureError } from '../../../core/ApiError';
 import ShipRepo from '../../../database/repository/ShipRepo';
 import UserRepo from '../../../database/repository/UserRepo';
+import EventRepo from '../../../database/repository/EventRepo';
 import EmailConfirmation from '../../../mail/EmailConfirmation';
 
 const router = express.Router();
@@ -98,18 +99,21 @@ const router = express.Router();
   * Return: EventRegistration
   */
 router.post(
-    '/',
+    '/:code',
+    validator(schema.eventCode, ValidationSource.PARAM),
     validator(schema.newEventRegistration),
     asyncHandler(async (req: ProtectedRequest, res) => {
+        const event = await EventRepo.findByCode(req.params.code);
+        if(!event) throw new BadRequestError('User does not have any ships registered');
 
         const createdEventRegistration = await EventRegistrationRepo.create({
             shipId: req.body.shipId,
-            eventId: req.body.eventId,
+            eventId: event._id,
             trackColor: req.body.trackColor,
             teamName: req.body.teamName,
         } as EventRegistration);
 
-        new EmailConfirmation(req.body.shipId, req.body.eventId);
+        new EmailConfirmation(req.body.shipId, event._id);
         new SuccessResponse('Event registration created successfully', createdEventRegistration).send(res);
     })
 )

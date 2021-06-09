@@ -3,6 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import * as decode from 'jwt-decode';
 import { User } from '../models/user';
+import { isAdmin } from '../helpers/RoleHelper';
 
 @Injectable({
   providedIn: 'root'
@@ -34,9 +35,9 @@ export class AuthGuard implements CanActivate {
    */
   Authenticate(expectedRole): boolean {
     this.user = JSON.parse(this.cookieService.get('user'));
-    const tokenDecoded = this.getDecodedAccessToken(this.user.token);
+    //const tokenDecoded = this.getDecodedAccessToken(this.user.token);
 
-    if (expectedRole === "admin" && tokenDecoded.role !== expectedRole)
+    if (expectedRole === "admin" && !isAdmin(this.user.roles))
       return false;
     else
       return true;
