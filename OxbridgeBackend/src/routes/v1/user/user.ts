@@ -14,23 +14,21 @@ import { RoleCode } from '../../../database/model/Role';
 import { Types } from 'mongoose';
 import JWT from '../../../core/JWT';
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';
-import { createTokens } from '../../../auth/authUtils';
 import _ from 'lodash';
 
 const router = express.Router();
 
 // Below all APIs are private APIs protected for Access Token and Users Role
-router.use('/', authentication, role(RoleCode.USER), role(RoleCode.ADMIN), authorization);
+router.use('/', authentication, role(RoleCode.USER), authorization);
 // ---------------------------------------------------------------------------
 
 /**
   * Retrieves a user
-  * Route: GET /users/:user
+  * Route: GET /users/:email
   * Return: User
   */
 router.get(
-    '/:user',
+    '/:email',
     validator(schema.email, ValidationSource.PARAM),
     asyncHandler(async (req: ProtectedRequest, res) => {
         const user = await UserRepo.findByEmail(req.params.user);

@@ -12,7 +12,7 @@ import { transporter } from './';
   * the participants notifications by email reminding them of the event.
   */
 
-class EmailNotification {
+export default class EmailNotification {
 
     cronJob: CronJob;
 
@@ -36,8 +36,8 @@ class EmailNotification {
     //The method that runs every day
     async task(): Promise<void> {
         //Find events that haven't started and haven't been notified
-        const returnedEvents = await EventRepo.findHasBeenNotified();
-        if(returnedEvents.length == 0) return;
+        const returnedEvents = await EventRepo.findHasNotBeenNotified();
+        if(!returnedEvents) return;
 
         //You should be notified three days before the event, find the dates
         const max = new Date();
@@ -50,12 +50,12 @@ class EmailNotification {
             if(isBetween(event.eventStart, min, max))
                 events.push(event);
         }
-        if(events.length == 0) return;
+        if(!events) return;
 
         for(const event of events){
             //Find the event registrations of the event
             const eventRegistrations = await EventRegistrationRepo.findByEvent(event._id);
-            if(eventRegistrations.length == 0) continue;
+            if(!eventRegistrations) continue;
 
             for(const registration of eventRegistrations){
                 //Find the user assosciated with the registration
@@ -66,7 +66,7 @@ class EmailNotification {
                 if(!user) continue;
 
                 //Finally, send the user a reminder through email
-                const info = await transporter.sendMail({
+                await transporter.sendMail({
                     from: '"Tregatta" <tregattasonderborg@gmail.com>',
                     to: user.email,
                     subject: "Glem ikke din kommende begivenhed!",
