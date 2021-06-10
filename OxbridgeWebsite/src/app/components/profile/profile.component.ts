@@ -24,6 +24,8 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.setShips();
     this.user = JSON.parse(this.cookieService.get('user'));
+    //this.user.password = "placeholder";
+    //this.user.confirmPassword = "placeholder";
   }
 
   /**
@@ -48,6 +50,7 @@ export class ProfileComponent implements OnInit {
     this.userService.updateUser(this.user).subscribe(res => {
       this.cookieService.set('user', JSON.stringify(this.user));
       this.appComponent.updateUser();
+      console.log('asdf');
       alert("Dine nye oplysninger er nu gemt")
     }, error => {
       this.user = JSON.parse(this.cookieService.get('user'));
