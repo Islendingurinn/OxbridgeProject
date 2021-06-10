@@ -33,6 +33,7 @@ router.post(
             name: req.body.name,
             eventStart: req.body.eventStart,
             eventEnd: req.body.eventEnd,
+            eventCode: req.body.eventCode,
             city: req.body.city,
             isLive: false,
         } as Event);

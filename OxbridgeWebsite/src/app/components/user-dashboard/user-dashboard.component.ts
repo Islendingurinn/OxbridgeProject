@@ -54,7 +54,7 @@ export class UserDashboardComponent implements OnInit {
    */
   OnSubmit(form: NgForm)
   {
-    this.eventRegService.SignUpForEvent(this.model.ship.shipId, this.model.teamName, this.model.eventCode).pipe()
+    this.eventRegService.SignUpForEvent(this.model.ship._id, this.model.teamName, this.model.eventCode).pipe()
     .subscribe(eventReg => {
       this.setMyEvents();
       form.reset();
@@ -69,7 +69,7 @@ export class UserDashboardComponent implements OnInit {
         this.WrongEventCode = false;
         this.alreadySignedUp = true;
       }
-      else if(error.status === 404)
+      else if(error.status === 400)
       {
         console.log("error message: "+error.statusText+error.url);
         this.alreadySignedUp = false;

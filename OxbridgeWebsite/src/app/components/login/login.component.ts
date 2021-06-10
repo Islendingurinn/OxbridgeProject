@@ -5,7 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { AppComponent } from 'src/app/app.component';
-import * as decode from 'jwt-decode';
+import { isAdmin } from '../../helpers/RoleHelper';
 
 @Component({
   selector: 'app-login',
@@ -29,11 +29,15 @@ export class LoginComponent implements OnInit {
    * Event handler for clicking login
    */
   OnSubmit() {
-    this.userService.login(this.model.emailUsername, this.model.password).pipe(first())
+    this.userService.login(this.model.email, this.model.password).pipe(first())
       .subscribe(user => {
-        this.cookieService.set('user', JSON.stringify(user), 1);
-        
-        if (user.role === "admin") {
+        let userObject = Object.assign(new User(), user['user']);
+        userObject.accessToken = user['tokens']['accessToken'];
+        const admin = isAdmin(userObject.roles);
+        user.admin = admin;
+        this.cookieService.set('user', JSON.stringify(userObject), 1);
+
+        if (admin) {
           this.router.navigate(['/administrerEvents']);
         }
         else {
@@ -48,8 +52,8 @@ export class LoginComponent implements OnInit {
             this.wrongLogin = false;
             this.wrongPassword = true;
           }
-          else if(error.status === 404)
-            this.model.emailUsername = "";
+          else if(error.status === 400)
+            this.model.email = "";
             this.model.password = "";
             this.wrongPassword = false;
             this.wrongLogin = true;

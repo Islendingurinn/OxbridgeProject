@@ -6,6 +6,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
 import { MyEvents } from '../models/my-events';
 import { EventRegistration } from '../models/event-registration';
+import { apiKey } from '../../environments/environment';
 import { Participant } from '../models/participant';
 
 @Injectable({
@@ -15,7 +16,8 @@ export class EventService {
 
   // private eventsUrl = 'https://oxbridgecloud.azurewebsites.net/events/';
 
-  private eventsUrl = 'http://localhost:3000/events/';
+  private userEventsUrl = 'http://localhost:3000/v1/events/';
+  private adminEventsUrl = 'http://localhost:3000/v1/admin/events/';
   
   constructor(private http: HttpClient, private cookieService:CookieService) { }
 
@@ -23,8 +25,17 @@ export class EventService {
    * Sends a http get event to the backend, in order to retrieve all events
    */
   public getEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(this.eventsUrl)
+    let user = JSON.parse(this.cookieService.get('user'));
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'Authorization': 'Bearer ' + user.accessToken
+      })
+    }
+    return this.http.get<Event[]>(this.userEventsUrl, httpOptions)
       .pipe(
+        map(events => { return events['data'] }),
         catchError(this.handleError<Event[]>('getEvents', []))
       );
   }
@@ -33,9 +44,17 @@ export class EventService {
    * Sends a http get request to the backend, in order to retrieve an specific event
    * @param eventId - The id of the event
    */
-  public getEvent(eventId:Number): Observable<Event> {
-    return this.http.get<Event>(this.eventsUrl+eventId)
-      .pipe(map(event => { return event}));
+  public getEvent(_id:string): Observable<Event> {
+    let user = JSON.parse(this.cookieService.get('user'));
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'Authorization': 'Bearer ' + user.accessToken
+      })
+    }
+    return this.http.get<Event>(this.userEventsUrl+_id, httpOptions)
+      .pipe(map(event => { return event['data']}));
   }
 
   /**
@@ -43,15 +62,16 @@ export class EventService {
    */
   public getMyEvents(): Observable<MyEvents[]> {
     let user = JSON.parse(this.cookieService.get('user'));
-    console.log("user token: "+user.token);
+    //console.log("user token: "+user.token);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': user.token
+        'x-api-key': apiKey,
+        'Authorization': 'Bearer ' + user.accessToken
       })
     }
-    return this.http.get<MyEvents[]>(this.eventsUrl+"myEvents/findFromUsername", httpOptions)
-      .pipe(map(events => { return events }));
+    return this.http.get<MyEvents[]>(this.userEventsUrl+"mine", httpOptions)
+      .pipe(map(events => { return events['data'] }));
   }
 
   /**
@@ -63,14 +83,20 @@ export class EventService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': user.token
+        'x-api-key': apiKey,
+        'Authorization': 'Bearer ' + user.accessToken
       })
     }
     
-    event.eventStart = event.eventStart+"T"+event.eventStartTime+":00.000+00:00";
-    event.eventEnd = event.eventEnd+"T"+event.eventEndTime+":00.000+00:00";
+    let newEvent = {
+      "name": event.name,
+      "eventStart": event.eventStart+"T"+event.eventStartTime+":00.000+00:00",
+      "eventEnd": event.eventEnd+"T"+event.eventEndTime+":00.000+00:00",
+      "eventCode": event.eventCode,
+      "city": event.city
+    }
 
-    return this.http.post<Event>(this.eventsUrl, event, httpOptions).pipe(map(event => { return event }));
+    return this.http.post<Event>(this.adminEventsUrl, newEvent, httpOptions).pipe(map(event => { return event['data'] }));
   }
 
   /**
@@ -78,70 +104,88 @@ export class EventService {
    * @param event - The new event information
    * @param eventId - The id of the event
    */
-  public updateEvent(event, eventId): Observable<Event>{
+  public updateEvent(event: Event): Observable<Event>{
     let user = JSON.parse(this.cookieService.get('user'));
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': user.token
+        'x-api-key': apiKey,
+        'Authorization': 'Bearer ' + user.accessToken
       })
     }
-    return this.http.put(this.eventsUrl+eventId, event, httpOptions).pipe(map(event => {return event}));
+
+    let object = {
+      "name": event.name,
+      "eventStart": event.eventStart,
+      "eventEnd": event.eventEnd,
+      "city": event.city
+    }
+
+    return this.http.put(this.adminEventsUrl+event._id, object, httpOptions).pipe(map(event => {return event['data']}));
   }
 
   /**
    * Sends a http delete request to the backend, in order to delete an event
    * @param eventId - The id of the event
    */
-  public deleteEvent(eventId): Observable<Event>{
+  public deleteEvent(_id: string): Observable<Event>{
     let user = JSON.parse(this.cookieService.get('user'));
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': user.token
+        'x-api-key': apiKey,
+        'Authorization': 'Bearer ' + user.accessToken
       })
     }
-    return this.http.delete(this.eventsUrl+eventId, httpOptions).pipe(map(event => {return event}));
+    return this.http.delete(this.userEventsUrl+_id, httpOptions).pipe(map(event => {return event['data']}));
   }
 
   /**
    * Sends a http get request to the backend, in order to check if the event has a route
    * @param eventId - The id of the event
    */
-  public hasRoute(eventId: Number): Observable<boolean>{
-    return this.http.get<boolean>(this.eventsUrl+"hasRoute/"+eventId).pipe(map(res => { return res }))
+  public hasRoute(_id: string): Observable<boolean>{
+    let user = JSON.parse(this.cookieService.get('user'));
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'Authorization': 'Bearer ' + user.accessToken
+      })
+    }
+    return this.http.get<boolean>(this.userEventsUrl + _id + "/hasRoute", httpOptions).pipe(map(res => { return res['data'] }))
   }
 
   /**
    * Sends a http put request to the backend, in order to start an event
    * @param eventId - The id of the event
    */
-  public startEvent(eventId): Observable<Event>{
+  public startEvent(_id: string): Observable<Event>{
     let user = JSON.parse(this.cookieService.get('user'));
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': user.token
+        'x-api-key': apiKey,
+        'Authorization': 'Bearer ' + user.accessToken
       })
     }
-    let dateTimeNow = new Date(Date.now());
-    dateTimeNow.setHours(dateTimeNow.getHours()+2);
-    return this.http.put<Event>(this.eventsUrl+"startEvent/"+eventId, {actualEventStart: dateTimeNow.toUTCString()}, httpOptions).pipe(map(event => { return event }));
+    return this.http.put<Event>(this.adminEventsUrl+"start/"+_id, null, httpOptions).pipe(map(event => { return event['data'] }));
   }
 
   /**
    * Sends a http get request to the backend, in order to stop an event
    * @param eventId - The id of the event
    */
-  public stopEvent(eventId): Observable<Event>{
+  public stopEvent(_id: string): Observable<Event>{
     let user = JSON.parse(this.cookieService.get('user'));
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': user.token
+        'x-api-key': apiKey,
+        'Authorization': 'Bearer ' + user.accessToken
       })
     }
-    return this.http.get<Event>(this.eventsUrl+"stopEvent/"+eventId, httpOptions).pipe(map(event => {return event}));
+    return this.http.put<Event>(this.adminEventsUrl+"stop/"+_id, null, httpOptions).pipe(map(event => {return event['data']}));
   }
 
   /**

@@ -5,7 +5,7 @@
 
         <!-- Login form -->
         <form class="form" (ngSubmit)="OnSubmit()">
-            <input class="form-control" type="text" placeholder="Email/brugernavn" [(ngModel)]="model.emailUsername"
+            <input class="form-control" type="text" placeholder="Email" [(ngModel)]="model.email"
                 name="email" #email="ngModel">
             <input class="form-control" type="password" placeholder="Adgangskode" [(ngModel)]="model.password"
                 name="password" #password="ngModel">
@@ -21,6 +21,6 @@
             <input id="login" type="submit" value="Login" routerLink="/logind" />
         </form>
         <br />
-        <p><a routerLink="/tilmelding">Opret profil</a></p>
+        <p><a routerLink="/tilmelding">Opret profil</a></p> <p> | </p> <p><a routerLink="/reset">Reset password</a></p>
     </div>
 </div>

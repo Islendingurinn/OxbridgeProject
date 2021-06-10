@@ -19,7 +19,7 @@
                     <img id="eventIcon" src="../../../assets/images/pin.png">
                 </div>
                 <div class="col-sm">
-                    <a id="eventLink" class="btn btn-link" [routerLink]="['/events', event.eventId, event.name]"
+                    <a id="eventLink" class="btn btn-link" [routerLink]="['/events', event._id, event.name]"
                         routerLinkActive="active">
                         <h4 class="pt-1">{{event.name}}</h4>
                     </a>
@@ -48,7 +48,7 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="!(events | async) || (events | async).length === 0">
+        <div *ngIf="!(events | async) || ((events | async).length === 0)">
             <p>Du er endnu ikke tilmeldt nogen events</p>
         </div>
     </section>

@@ -38,7 +38,7 @@ export class ProfileComponent implements OnInit {
    * @param ship 
    */
   deleteShip(ship) {
-    this.shipService.deleteShip(ship.shipId).subscribe(ship => this.setShips());
+    this.shipService.deleteShip(ship._id).subscribe(ship => this.setShips());
   }
 
   /**

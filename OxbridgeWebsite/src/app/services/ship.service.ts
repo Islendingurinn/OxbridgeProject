@@ -4,6 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Ship } from '../models/ship';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { apiKey } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class ShipService {
 
   // private shipUrl = 'https://oxbridgecloud.azurewebsites.net/ships/'
 
-  private shipUrl = 'http://localhost:3000/ships/'
+  private shipUrl = 'http://localhost:3000/v1/ships/'
   constructor(private http: HttpClient, private cookieService:CookieService) { }
 
   /**
@@ -23,27 +24,31 @@ export class ShipService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': user.token
+        'x-api-key': apiKey,
+        'Authorization': 'Bearer ' + user.accessToken
       })
     }
-    return this.http.get<Ship[]>(this.shipUrl+"myShips/fromUsername", httpOptions)
-      .pipe(map(ships => { return ships }));
+    return this.http.get<Ship[]>(this.shipUrl+"mine", httpOptions)
+      .pipe(map(ships => { 
+        return ships['data']
+       }));
   }
 
   /**
    * Sends a http delete request to the backend, in order to delete a ship
    * @param shipId - The id of the ship
    */
-  public deleteShip(shipId): Observable<Ship>{
+  public deleteShip(_id: string): Observable<Ship>{
     let user = JSON.parse(this.cookieService.get('user'));
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': user.token
+        'x-api-key': apiKey,
+        'Authorization': 'Bearer ' + user.accessToken
       })
     }
-    return this.http.delete<Ship>(this.shipUrl+shipId, httpOptions)
-      .pipe(map(ship => { return ship }));
+    return this.http.delete<Ship>(this.shipUrl+_id, httpOptions)
+      .pipe(map(ship => { return ship['data'] }));
   }
 
   /**
@@ -56,9 +61,11 @@ export class ShipService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': user.token
+        'x-api-key': apiKey,
+        'Authorization': 'Bearer ' + user.accessToken
       })
     }
-    return this.http.post<Ship>(this.shipUrl, newShip, httpOptions).pipe(map(ship => { return ship }));
+    newShip.userId = user._id;
+    return this.http.post<Ship>(this.shipUrl, newShip, httpOptions).pipe(map(ship => { return ship['data'] }));
   }
 }

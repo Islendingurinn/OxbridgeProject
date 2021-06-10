@@ -1,6 +1,6 @@
 export class Event {
     constructor(
-        public eventId?:string, 
+        public _id?:string, 
         public name?:string, 
         public eventStart?:string, 
         public eventEnd?:string, 

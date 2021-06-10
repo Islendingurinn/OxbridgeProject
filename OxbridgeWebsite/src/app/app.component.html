@@ -28,12 +28,12 @@
         <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown">
           <button class="btn btn-outline-info mr-2" id="dropdownManual" ngbDropdownAnchor
             (focus)="myDrop.open()">{{user.firstname}}</button>
-          <div *ngIf="user.role === 'user'" ngbDropdownMenu aria-labelledby="dropdownManual">
+          <div *ngIf="!user.admin" ngbDropdownMenu aria-labelledby="dropdownManual">
             <button ngbDropdownItem routerLink="/mineEvents">Mine Events</button>
             <button ngbDropdownItem routerLink="/profil">Profil</button>
             <button ngbDropdownItem (click)="LogOut()">Log ud</button>
           </div>
-          <div *ngIf="user.role === 'admin'" ngbDropdownMenu aria-labelledby="dropdownManual">
+          <div *ngIf="user.admin" ngbDropdownMenu aria-labelledby="dropdownManual">
             <button ngbDropdownItem routerLink="/administrerEvents">Administrer Events</button>
             <button ngbDropdownItem routerLink="/profil">Profil</button>
             <button ngbDropdownItem (click)="LogOut()">Log ud</button>

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
 import { AppComponent } from 'src/app/app.component';
+import { isAdmin } from '../../helpers/RoleHelper';
 
 @Component({
   selector: 'app-registration',
@@ -26,14 +27,18 @@ export class RegistrationComponent implements OnInit {
   OnSubmit() {
     this.userService.registerUser(this.model).pipe(first())
       .subscribe(user => {
-        this.model.role = "user";
-        this.cookieService.set('user', JSON.stringify(this.model), 1);
+        let userObject = Object.assign(new User(), user['user']);
+        userObject.accessToken = user['tokens']['accessToken'];
+        const admin = isAdmin(userObject.roles);
+        user.admin = admin;
+        this.cookieService.set('user', JSON.stringify(userObject), 1);
         this.router.navigateByUrl('/mineEvents');
         this.appComponent.updateUser();
+
       },
         error => {
           if (error.status === 409) {
-            this.model.emailUsername = "";
+            this.model.email = "";
             this.isAvaliable = false;
           }
         });

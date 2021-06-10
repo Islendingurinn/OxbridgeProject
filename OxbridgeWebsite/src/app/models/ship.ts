@@ -1,6 +1,7 @@
 export class Ship {
     constructor(
-        public shipId?: number, 
-        public name?: string
+        public _id?: number, 
+        public name?: string,
+        public userId?: string
         ){}
 }

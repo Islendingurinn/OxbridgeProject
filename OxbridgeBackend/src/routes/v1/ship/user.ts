@@ -62,6 +62,23 @@ router.get(
     })
 )
 
+
+/**
+  * Gets a registered ship
+  * Route: GET /ships/:id
+  * Return: Ship
+  */
+router.get(
+    '/:id',
+    validator(schema.shipId, ValidationSource.PARAM),
+    asyncHandler(async (req: ProtectedRequest, res) => {
+        const ship = await ShipRepo.findById(req.body.id);
+        if(!ship) throw new BadRequestError('No ship with this id');
+
+        return new SuccessResponse('success', ship).send(res);
+    })
+)
+
 /**
   * Gets all registered ships in an event
   * Route: GET /ships/fromEvent/:id

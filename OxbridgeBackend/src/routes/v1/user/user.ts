@@ -5,13 +5,13 @@ import validator, { ValidationSource } from '../../../helpers/validator';
 import schema from './schema';
 import asyncHandler from '../../../helpers/asyncHandler';
 import { ProtectedRequest } from 'app-request';
+import { getAccessToken } from '../../../auth/authUtils';
 import UserRepo from '../../../database/repository/UserRepo';
 import authentication from '../../../auth/authentication';
 import authorization from '../../../auth/authorization';
 import role from '../../../helpers/role';
 import { RoleCode } from '../../../database/model/Role';
 import { Types } from 'mongoose';
-import { getAccessToken } from '../../../auth/authUtils';
 import JWT from '../../../core/JWT';
 import bcrypt from 'bcrypt';
 import _ from 'lodash';
@@ -34,7 +34,7 @@ router.get(
         const user = await UserRepo.findByEmail(req.params.user);
         if (!user) throw new BadRequestError();
 
-        return new SuccessResponse('success', user).send(res);
+        return new SuccessResponse('success', _.pick(user, ['_id', 'email', 'roles', 'firstname', 'lastname'])).send(res);
     }),
 );
 
