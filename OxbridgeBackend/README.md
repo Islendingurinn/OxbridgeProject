@@ -10,6 +10,7 @@
 
 ## Initial mongoDB
 
+```
 db.createUser({
     user: user,
     pwd: password,
@@ -31,6 +32,7 @@ db.roles.insertMany([
     { code: 'ADMIN', status: true },
   ]);
 }
+```
 
 ## Testing
 
