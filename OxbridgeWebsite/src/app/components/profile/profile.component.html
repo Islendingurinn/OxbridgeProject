@@ -19,25 +19,63 @@
                 <div class="row ml-5 mb-2">
                     <div class="col-xsm">
                         <input type="text" class="form-control" placeholder="Fornavn" required
-                            [(ngModel)]="user.firstname" #firstname="ngModel" name="firstname">
+                            [(ngModel)]="user.firstname" #firstname="ngModel" pattern="^[a-zA-ZÆØÅæøå ]*" name="firstname">
+                        <div *ngIf="firstname.invalid && firstname.touched">
+                            <div *ngIf="firstname.errors.required">
+                                Fornavn er nødvendig
+                            </div>
+                            <div *ngIf="firstname.errors.pattern">
+                                Fornavn må kun indeholde bogstaver
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <input type="text" class="form-control ml-3" placeholder="Efternavn" required
-                            [(ngModel)]="user.lastname" #lastname="ngModel" name="lastname">
+                            [(ngModel)]="user.lastname" #lastname="ngModel" pattern="^[a-zA-ZÆØÅæøå ]*" name="lastname">
+                        <div *ngIf="lastname.invalid && lastname.touched">
+                            <div *ngIf="lastname.errors.required">
+                                Efternavn er nødvendig
+                            </div>
+                            <div *ngIf="lastname.errors.pattern">
+                                Efternavn må kun indeholde bogstaver
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row ml-5 mb-2">
                     <div class="col-xsm">
-                        <input type="password" class="psw form-control" placeholder="Gamle adgangskode">
+                        <input type="password" class="psw form-control" placeholder="Gamle adgangskode"
+                        [(ngModel)]="user.password" #password="ngModel" name="password" 
+                        pattern="^(?=.*[a-zA-ZÆØÅæøå])(?=.*\d)[a-zA-ZÆØÅæøå\d]*$" minlength="8">
+
+                        <div *ngIf="password.invalid && password.touched">
+                            <div *ngIf="password.errors.pattern">
+                                Gamle adgangskoden skal indeholde både tal og bogstaver
+                            </div>
+                            <div *ngIf="password.errors.minlength">
+                                Gamle adgangskoden skal være mindst 8 karakterer lang
+                            </div>
+                        </div>
                     </div>
                     <div>
-                        <input type="password" class="psw form-control ml-3" placeholder="Ny adgangskode">
+                        <input type="password" class="psw form-control ml-3" placeholder="Ny adgangskode"
+                        [(ngModel)]="user.confirmPassword" #confirmPassword="ngModel" name="confirmPassword" 
+                        pattern="^(?=.*[a-zA-ZÆØÅæøå])(?=.*\d)[a-zA-ZÆØÅæøå\d]*$" minlength="8">
+
+                        <div *ngIf="confirmPassword.invalid && confirmPassword.touched">
+                            <div *ngIf="confirmPassword.errors.pattern">
+                                Nye adgangskoden skal indeholde både tal og bogstaver
+                            </div>
+                            <div *ngIf="confirmPassword.errors.minlength">
+                                Nye adgangskoden skal være mindst 8 karakterer lang
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row ml-5">
                     <div>
                         <input type="text" class="form-control" readonly placeholder="Email" required
-                            [(ngModel)]="user.email" #emailUsername="ngModel" name="emailUsername">
+                            [(ngModel)]="user.email" #email="ngModel" name="email">
                     </div>
                     <div>
                         <button class="btn btn-outline-info ml-3" type="submit"
