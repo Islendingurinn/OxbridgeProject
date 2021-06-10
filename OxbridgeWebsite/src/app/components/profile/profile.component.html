@@ -49,14 +49,11 @@
                         pattern="^(?=.*[a-zA-ZÆØÅæøå])(?=.*\d)[a-zA-ZÆØÅæøå\d]*$" minlength="8">
 
                         <div *ngIf="password.invalid && password.touched">
-                            <div *ngIf="password.errors.required">
-                                Adgangskode er nødvendig
-                            </div>
                             <div *ngIf="password.errors.pattern">
-                                Adgangskoden skal indeholde både tal og bogstaver
+                                Gamle adgangskoden skal indeholde både tal og bogstaver
                             </div>
                             <div *ngIf="password.errors.minlength">
-                                Adgangskoden skal være mindst 8 karakterer lang
+                                Gamle adgangskoden skal være mindst 8 karakterer lang
                             </div>
                         </div>
                     </div>
@@ -66,14 +63,11 @@
                         pattern="^(?=.*[a-zA-ZÆØÅæøå])(?=.*\d)[a-zA-ZÆØÅæøå\d]*$" minlength="8">
 
                         <div *ngIf="confirmPassword.invalid && confirmPassword.touched">
-                            <div *ngIf="confirmPassword.errors.required">
-                                Adgangskode er nødvendig
-                            </div>
                             <div *ngIf="confirmPassword.errors.pattern">
-                                Adgangskoden skal indeholde både tal og bogstaver
+                                Nye adgangskoden skal indeholde både tal og bogstaver
                             </div>
                             <div *ngIf="confirmPassword.errors.minlength">
-                                Adgangskoden skal være mindst 8 karakterer lang
+                                Nye adgangskoden skal være mindst 8 karakterer lang
                             </div>
                         </div>
                     </div>
