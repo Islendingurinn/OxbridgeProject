@@ -61,6 +61,23 @@ export class UserService {
   }
 
   /**
+   * Sends a http post request to the backend, in order to reset password
+   * @param email - The email of the user
+   */
+   public reset(email:string): Observable<User> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      })
+    }
+    return this.http.post<User>("http://localhost:3000/v1/reset/", {email}, httpOptions).pipe(map(user => {
+      return user['data'];
+    }));
+
+  }
+
+  /**
    * Decodes the given token
    * @param token - The token that should be decoded
    */
