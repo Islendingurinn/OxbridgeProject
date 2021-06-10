@@ -365,5 +365,6 @@ MigrationBackup/
 FodyWeavers.xsd
 OxbridgeBackend/.env
 OxbridgeBackend/coverage
+OxbridgeBackend/build
 OxbridgeBackend/tests/.env.test
 OxbridgeWebsite/src/environments/environment.ts
