@@ -24,15 +24,15 @@ return Scaffold(
               if (snapshot.data == null) {
                 return Container(
                   child: Center(
-                    child: CircularProgressIndicator(),
+                    child: Icon(Icons.event_busy_outlined),
                   ),
                 );
               } else {
                 return ListView.builder(
                   itemCount: snapshot.data.length,
                   itemBuilder: (contex, index) => ListTile(
-                    title: Text(snapshot.data[index].eventId),
-                    subtitle: Text(snapshot.data[index].eventStart),
+                    title: Text(snapshot.data[index].name),
+                    subtitle: Text(snapshot.data[index].eventStart.toString()),
                     contentPadding: EdgeInsets.only(bottom: 20.0),
                   ),
                 );

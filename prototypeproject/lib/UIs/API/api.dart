@@ -3,42 +3,21 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:prototypeproject/Model/event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 
 
 
 class HttpService {
   final String eventsURL = 'http://localhost:3000/v1/events';
+  static String token = "";
 
-//get events
-  Future<List<Event>> getEvents() async {
-    Response res = await get(Uri.parse(eventsURL), 
-    headers: {
-        "Content-Type": "application/json",
-        "x-api-key":"wretwreytgwrsg3534632342", 
-        "Authorization":"Bearer token"
-        },
-    );
 
-    if (res.statusCode == 200) {
-      List<dynamic> body = jsonDecode(res.body);
-
-      List<Event> events = body
-        .map(
-          (dynamic item) => Event.fromJson(item),
-        )
-        .toList();
-
-      return events;
-    } else {
-      throw "Unable to retrieve events.";
-    }
-  }
   //register new user
   Future<dynamic> postRequest (firstName,lastName,email,password) async {
   var url ='http://localhost:3000/v1/signup';
   var body = jsonEncode({'firstname':firstName, 'lastname':lastName, 'email':email,'password':password });
-  var token= "";
+  
 
   print("Body: " + body);
 
@@ -63,6 +42,39 @@ class HttpService {
   prefs.setString('accessToken', token);
   String tokens = prefs.getString('token');
   print(tokens);
- }
 
+ }
+ //get events
+  
+Future<List<Event>> getEvents() async {
+
+    Response res = await http.get(Uri.parse(eventsURL), 
+    headers: {
+        "Content-Type": "application/json",
+        "Accept" :"application/json",
+        "x-api-key":"wretwreytgwrsg3534632342", 
+        "Authorization":"Bearer " + token
+        
+        },
+    );
+    print ('Token :{token}');
+    print(res);
+    print (json.decode(res.body)['data']);
+  
+
+
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body)['data'];
+
+      List<Event> events = body
+        .map(
+          (dynamic item) => Event.fromJson(item),
+        )
+        .toList();
+
+      return events;
+    } else {
+      throw "Unable to retrieve events.";
+    }
+  }
 }

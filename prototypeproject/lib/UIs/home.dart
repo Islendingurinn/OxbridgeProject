@@ -10,7 +10,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    // home screen type is Scaffold
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
