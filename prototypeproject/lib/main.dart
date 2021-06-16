@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Register',
+      title: 'Home Page',
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),

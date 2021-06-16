@@ -16,7 +16,7 @@ class HttpService {
     headers: {
         "Content-Type": "application/json",
         "x-api-key":"wretwreytgwrsg3534632342", 
-        "Authorization":""
+        "Authorization":"Bearer token"
         },
     );
 
@@ -54,6 +54,7 @@ class HttpService {
     print(response.headers);
     print(response.request);
     token="${json.decode(response.body)['data']['tokens']['accessToken']}";
+     print (json.decode(response.body)['data']['tokens']['accessToken']);
    
 
 
