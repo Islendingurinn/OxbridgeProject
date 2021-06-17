@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:TheOxbridgeApp.ViewModels;assembly=TheOxbridgeApp"
+             x:Class="TheOxbridgeApp.Views.AccountPageView"
+             >
+    <ContentPage.BindingContext>
+        <viewModels:AccountPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout>
+            <Image  BackgroundColor="Transparent" Aspect="AspectFill" Source="{Binding UserPhoto.PictureSource}"
+                                             Margin="0,0,0,0"  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            </Image>
+            <Button Text="Nyt Brugerbillede!" Command="{Binding CameraCMD}"></Button>
+            <Button Text="Pick a profile picture!" Command="{Binding PickCMD}"></Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
